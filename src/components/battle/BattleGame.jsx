@@ -17,11 +17,13 @@ export default function BattleGame({ onVictory }) {
   const [hiddenOpts, setHiddenOpts] = useState([]);
   const [usedPotion, setUsedPotion] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
-  const [fx, setFx] = useState(null); // 'hit-ghost' | 'hit-hot'
-  const [hotLine, setHotLine] = useState('Bora, você consegue!');
-  const [modal, setModal] = useState(null); // 'reward' | 'gameover' | 'victory'
+  const [fx, setFx] = useState(null); // 'attack-ghost' | 'attack-hot'
+  const [hotLine, setHotLine] = useState(null);
+  const [modal, setModal] = useState(null);
 
   const stage = ghostStageForIndex(qi);
+  const prevStage = qi > 0 ? ghostStageForIndex(qi - 1) : stage;
+  const stageChanged = stage.name !== prevStage.name;
   const q = questions[qi];
 
   function restart() {
@@ -34,16 +36,17 @@ export default function BattleGame({ onVictory }) {
     const isCorrect = i === q.correct;
 
     if (isCorrect) {
-      setFx('hit-ghost');
+      setFx('attack-ghost');
       setCorrectCount((c) => c + 1);
     } else {
-      setFx('hit-hot');
+      setFx('attack-hot');
       setHotLine(HOT_HIT_LINES[Math.floor(Math.random() * HOT_HIT_LINES.length)]);
       setLives((l) => l - 1);
     }
 
     setTimeout(() => {
       setFx(null);
+      setHotLine(null);
       if (!isCorrect && lives - 1 <= 0) {
         setModal('gameover');
         return;
@@ -53,7 +56,7 @@ export default function BattleGame({ onVictory }) {
         return;
       }
       goNext();
-    }, isCorrect ? 700 : 1100);
+    }, isCorrect ? 1000 : 1300);
   }
 
   function goNext() {
@@ -83,14 +86,11 @@ export default function BattleGame({ onVictory }) {
     goNext();
   }
 
-  const darkOverlay = useMemo(
-    () => ({ background: `rgba(0,0,0,${stage.darkness})` }),
-    [stage]
-  );
+  const darkOverlay = useMemo(() => ({ background: `rgba(0,0,0,${stage.darkness})` }), [stage]);
 
   return (
-    <div className="battle-scene" style={{ background: `radial-gradient(circle at 50% 20%, #241a12, #0a0705 75%)` }}>
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', ...darkOverlay }} />
+    <div className="battle-scene">
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', ...darkOverlay, transition: 'background 0.6s' }} />
 
       <div className="battle-hud">
         <div className="hearts">
@@ -103,67 +103,100 @@ export default function BattleGame({ onVictory }) {
         </div>
       </div>
 
+      <AnimatePresence>
+        {stageChanged && qi > 0 && (
+          <motion.div
+            className="stage-banner"
+            initial={{ opacity: 0, y: -14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            A masmorra fica mais sombria... <b>{stage.name}</b> apareceu!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="battle-arena">
-        <div className="fighter" style={{ position: 'relative' }}>
+        <div className="fighter-lane">
           <motion.img
             src={MASCOT_IMG}
             alt="Esquentadinho"
-            style={{ width: 90 }}
+            className="fighter-img"
             animate={
-              fx === 'hit-hot'
-                ? { x: [0, -8, 8, -6, 6, 0] }
-                : fx === 'hit-ghost'
-                ? { x: [0, 20, 0] }
+              fx === 'attack-ghost'
+                ? { x: [0, 130, 130, 0] }
+                : fx === 'attack-hot'
+                ? { x: [0, -10, 10, -8, 8, 0] }
                 : { y: [0, -5, 0] }
             }
-            transition={{ duration: fx ? 0.45 : 1.4, repeat: fx ? 0 : Infinity }}
+            transition={
+              fx === 'attack-ghost'
+                ? { duration: 0.9, times: [0, 0.35, 0.65, 1] }
+                : fx === 'attack-hot'
+                ? { duration: 0.45 }
+                : { duration: 1.4, repeat: Infinity }
+            }
           />
           <AnimatePresence>
-            {fx === 'hit-ghost' && (
-              <motion.span
-                key="sword"
-                initial={{ opacity: 0, x: 0, rotate: -30 }}
-                animate={{ opacity: 1, x: 90, rotate: 20 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35 }}
-                style={{ position: 'absolute', top: 10, fontSize: 34 }}
-              >
-                🗡️
-              </motion.span>
+            {fx === 'attack-ghost' && (
+              <>
+                <motion.span
+                  key="sword1"
+                  className="sword-swing"
+                  initial={{ opacity: 0, x: 90, rotate: -40 }}
+                  animate={{ opacity: 1, x: 150, rotate: 25 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.28, delay: 0.32 }}
+                >
+                  🗡️
+                </motion.span>
+                <motion.span
+                  key="sword2"
+                  className="sword-swing"
+                  initial={{ opacity: 0, x: 90, rotate: 40 }}
+                  animate={{ opacity: 1, x: 150, rotate: -25 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.26, delay: 0.6 }}
+                >
+                  🗡️
+                </motion.span>
+              </>
             )}
-            {fx === 'hit-hot' && (
+            {fx === 'attack-hot' && (
               <motion.span
                 key="slime"
-                initial={{ opacity: 0, x: 90 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, x: 130, y: -20 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
                 className="slime"
-                style={{ top: 10, color: stage.slime }}
               >
-                🟢
+                {stage.slimeEmoji}
               </motion.span>
             )}
           </AnimatePresence>
         </div>
 
-        <div className="ghost" style={{ position: 'relative', color: stage.color }}>
+        <div className="ghost-lane">
           <span className="ghost-name">{stage.name}</span>
           <motion.span
+            className="ghost-emoji"
+            style={{ color: stage.color }}
             animate={
-              fx === 'hit-ghost'
-                ? { opacity: [1, 0.3, 1], scale: [1, 1.15, 1] }
+              fx === 'attack-ghost'
+                ? { opacity: [1, 0.3, 1, 0.3, 1], scale: [1, 0.85, 1.1, 0.85, 1] }
                 : { y: [0, -8, 0] }
             }
-            transition={{ duration: fx === 'hit-ghost' ? 0.4 : 1.6, repeat: fx === 'hit-ghost' ? 0 : Infinity }}
+            transition={{ duration: fx === 'attack-ghost' ? 0.9 : 1.6, repeat: fx === 'attack-ghost' ? 0 : Infinity }}
           >
-            👻
+            {stage.emoji}
           </motion.span>
         </div>
       </div>
 
       <AnimatePresence>
-        {fx === 'hit-hot' && (
+        {hotLine && (
           <motion.div
             className="hot-line"
             initial={{ opacity: 0, y: 8 }}

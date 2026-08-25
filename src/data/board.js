@@ -1,6 +1,6 @@
 // Tabuleiro baseado no Fluxograma de Vendas — dividido em 5 temas visuais.
-// Cada "stop" do tabuleiro tem um ou mais blocos de informação (tela cheia,
-// transparente, com o tema de fundo). Cada bloco concluído dá XP.
+// Cada "stop" da trilha tem: 1 pergunta (com correlação ao conteúdo da intro)
+// e vários blocos curtos de informação (um recorte por bloco, não parágrafos).
 
 export const THEMES = [
   { id: 'partida', label: 'Partida', bg: 'theme-partida' },
@@ -10,121 +10,118 @@ export const THEMES = [
   { id: 'galaxia', label: 'Galáxia', bg: 'theme-galaxia' },
 ];
 
-const XP_PER_BLOCK = 10;
-export { XP_PER_BLOCK };
+export const XP_PER_BLOCK = 10;
 
 export const BOARD_STOPS = [
   {
     id: 'inicio-atendimento',
     theme: 'partida',
-    title: '1. Início do atendimento',
+    number: 1,
+    title: 'Início do atendimento',
+    question: {
+      text: 'O lead chega até você. Qual deve ser o seu primeiro passo?',
+      options: ['Enviar uma proposta na hora', 'Fazer uma saudação completa e cordial', 'Pedir os documentos'],
+      correct: 1,
+    },
     blocks: [
-      {
-        heading: 'Lead chega ao vendedor',
-        body: 'O atendimento começa quando um lead — que pode já ter passado pela IA ou por uma Landing Page — chega até você.',
-      },
-      {
-        heading: 'Saudação completa',
-        body: 'Faça uma saudação completa e cordial. É o primeiro contato humano do cliente com a Hotline — cause uma boa impressão.',
-      },
+      { heading: 'Lead chega ao vendedor', body: 'O atendimento começa quando um lead chega até você — muitas vezes já passou pela IA ou por uma Landing Page.' },
+      { heading: 'Saudação completa', body: 'Faça uma saudação cordial. É o primeiro contato humano do cliente com a Hotline.' },
+      { heading: 'Conecta com a intro', body: 'Lembra da <b>Jornada de um atendimento</b>? Esse é o passo 1: Contextualização — entender de onde o cliente veio antes de responder.' },
     ],
   },
   {
     id: 'identificar-cenario',
     theme: 'praia',
-    title: '2. Identificar cenário',
+    number: 2,
+    title: 'Identificar cenário',
+    question: {
+      text: 'Um cliente some no meio da conversa e não responde mais. Isso é qual cenário?',
+      options: ['Cenário A — Dúvida', 'Cenário C — Não respondeu', 'Cenário D — Estressado'],
+      correct: 1,
+    },
     blocks: [
-      {
-        heading: 'Qual o cenário do cliente?',
-        body: 'Todo atendimento se encaixa em um de quatro cenários: <b>A)</b> cliente com dúvida, <b>B)</b> cliente não se interessou pelo valor, <b>C)</b> cliente não respondeu, <b>D)</b> cliente estressado.',
-      },
+      { heading: 'Quatro cenários possíveis', body: 'Todo atendimento se encaixa em um destes: dúvida, não se interessou pelo valor, não respondeu, ou está estressado.' },
+      { heading: 'Por que identificar primeiro', body: 'Saber o cenário certo evita que você use a abordagem errada e perca a venda por um mal-entendido.' },
     ],
   },
   {
     id: 'cenario-a',
     theme: 'praia',
-    title: '3. Cenário A — Cliente com dúvida',
+    number: 3,
+    title: 'Cenário A — Cliente com dúvida',
+    question: {
+      text: 'Cliente diz que já contratou antes e agora quer o contrato. O que fazer?',
+      options: ['Ignorar o pedido', 'Enviar o contrato', 'Encerrar o atendimento'],
+      correct: 1,
+    },
     blocks: [
-      {
-        heading: 'Dúvida sobre o produto',
-        body: 'Informe sobre o produto, entenda qual produto o cliente quer, sane a dúvida e volte ao atendimento normalmente.',
-      },
-      {
-        heading: 'Já contratou antes',
-        body: 'Se quer o contrato → envie o contrato. Se não quer, mas tem dúvida sobre o produto → informe sobre desconto/quitação. Se não tem dúvida → finalize.',
-      },
-      {
-        heading: 'Não recebeu o valor',
-        body: 'Peça o extrato recente do banco e confirme se a conta está correta. Se sim, passe para o apoio do banco. Se não, peça o extrato da conta informada inicialmente e verifique erros de digitação antes de refazer o processo.',
-      },
+      { heading: 'Dúvida sobre o produto', body: 'Informe sobre o produto, entenda o que o cliente quer e sane a dúvida antes de seguir.' },
+      { heading: 'Já contratou antes', body: 'Quer o contrato → envie o contrato. Tem dúvida sobre desconto/quitação → informe. Sem dúvida → finalize.' },
+      { heading: 'Não recebeu o valor', body: 'Peça o extrato recente e confirme se a conta está correta antes de acionar o apoio do banco.' },
+      { heading: 'Conecta com a intro', body: 'Isso é <b>Negociação</b> na prática: entender a necessidade antes de agir.' },
     ],
   },
   {
     id: 'cenario-b',
     theme: 'autodromo',
-    title: '4. Cenário B — Cliente não se interessou pelo valor',
+    number: 4,
+    title: 'Cenário B — Não se interessou pelo valor',
+    question: {
+      text: 'Cliente acha o valor liberado muito baixo. Qual a melhor atitude?',
+      options: ['Verificar outro banco e simular de novo', 'Encerrar o atendimento', 'Insistir no mesmo valor'],
+      correct: 0,
+    },
     blocks: [
-      {
-        heading: 'Tem dúvida operacional',
-        body: 'Informe juros, margem e regras do produto, faça a negociação e acalme o cliente sobre o funcionamento.',
-      },
-      {
-        heading: 'Valor "ruim" — pouco ou muito',
-        body: 'Pouco: verifique outro banco e faça nova simulação, ou negocie. Muito: convença o cliente do porquê o valor maior faz sentido, e negocie.',
-      },
-      {
-        heading: 'Não tem dúvida',
-        body: 'Se o cliente ainda não quer, refaça a simulação dentro do que ele espera, ou ofereça outro produto. Se ainda assim não quiser, deixe em aberto e faça follow up depois.',
-      },
+      { heading: 'Dúvida operacional', body: 'Informe juros, margem e regras do produto — e acalme o cliente sobre o funcionamento.' },
+      { heading: 'Valor "ruim"', body: 'Pouco: veja outro banco e refaça a simulação. Muito: mostre o porquê o valor maior faz sentido.' },
+      { heading: 'Conecta com a intro', body: 'Vale o exemplo de <b>Benefícios, não só produto</b>: "as taxas costumam ser mais acessíveis" pesa mais que só falar de juros.' },
     ],
   },
   {
     id: 'cenario-c',
     theme: 'autodromo',
-    title: '5. Cenário C — Cliente não respondeu',
+    number: 5,
+    title: 'Cenário C — Cliente não respondeu',
+    question: {
+      text: 'Já se passaram +30 minutos sem resposta. Qual o próximo passo?',
+      options: ['Esperar até o fim do dia', 'Fazer uma ligação', 'Enviar 10 mensagens seguidas'],
+      correct: 1,
+    },
     blocks: [
-      {
-        heading: 'Enviar áudio',
-        body: 'Envie um áudio avisando que vai seguir com o atendimento dele — mostra cuidado sem ser invasivo.',
-      },
-      {
-        heading: 'Escalada por tempo',
-        body: '10–20 min: áudio. +30 min: ligação (se não atender, áudio; se atender, retomar o WhatsApp). +1h: ligação + áudio (urgência de oportunidade). +3h: ligação + áudio (urgência). Final do dia: última ligação, e se não atender, avisar que o atendimento vai encerrar.',
-      },
-      {
-        heading: 'Follow ups do dia',
-        body: 'Depois dos dois primeiros contatos, programe pelo menos +3 follow ups ao longo do dia.',
-      },
+      { heading: 'Primeiro sinal (10–20 min)', body: 'Envie um áudio avisando que vai seguir com o atendimento — mostra cuidado sem ser invasivo.' },
+      { heading: 'Escalada (+30min a +3h)', body: 'Ligação, depois ligação + áudio. Se não atender, retome por áudio e explique a urgência.' },
+      { heading: 'Final do dia', body: 'Última ligação. Se não atender, avise que o atendimento vai encerrar por hoje, e programe follow ups.' },
     ],
   },
   {
     id: 'cenario-d',
     theme: 'nuvens',
-    title: '6. Cenário D — Cliente estressado',
+    number: 6,
+    title: 'Cenário D — Cliente estressado',
+    question: {
+      text: 'Cliente estressado por causa do valor liberado. O que fazer primeiro?',
+      options: ['Voltar ao Cenário B (valor)', 'Discutir com o cliente', 'Ignorar até ele se acalmar'],
+      correct: 0,
+    },
     blocks: [
-      {
-        heading: 'Por quê?',
-        body: 'Se é dúvida → volte ao Cenário A. Se é sobre o valor → volte ao Cenário B. Se é algo geral → acalme o cliente, siga o atendimento e, se necessário, faça uma ligação.',
-      },
+      { heading: 'Descubra o motivo', body: 'Se é dúvida → volte ao Cenário A. Se é valor → volte ao Cenário B.' },
+      { heading: 'Estresse geral', body: 'Acalme o cliente, siga o atendimento normalmente e, se precisar, faça uma ligação.' },
     ],
   },
   {
     id: 'finalizacao',
     theme: 'galaxia',
-    title: '7. Finalização do atendimento',
+    number: 7,
+    title: 'Finalização do atendimento',
+    question: {
+      text: 'Cliente ficou satisfeito, mas a proposta não foi aprovada. O que fazer?',
+      options: ['Só finalizar sem avisar nada', 'Agradecer, explicar o motivo e deixar canal aberto', 'Cobrar o cliente pela demora'],
+      correct: 1,
+    },
     blocks: [
-      {
-        heading: 'Cliente satisfeito?',
-        body: 'Se sim, finalize com sucesso. Se não, deixe em aberto para follow up.',
-      },
-      {
-        heading: 'Follow up',
-        body: 'Continue com negociação, novas simulações ou ofertas de outros produtos, conforme o caso.',
-      },
-      {
-        heading: 'Encerramento',
-        body: 'Agradeça o contato e deixe o canal aberto para retorno — mesmo quando não fecha negócio.',
-      },
+      { heading: 'Cliente satisfeito?', body: 'Sim → finalize com sucesso. Não → deixe em aberto para follow up.' },
+      { heading: 'Follow up', body: 'Negociação, nova simulação ou oferta de outro produto, conforme o caso.' },
+      { heading: 'Encerramento', body: 'Agradeça o contato e deixe o canal aberto — mesmo sem fechar negócio.' },
     ],
   },
 ];

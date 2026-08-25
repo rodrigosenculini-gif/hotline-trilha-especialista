@@ -1,9 +1,17 @@
+import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LessonView({ lesson, index, total, onPrev, onNext }) {
+  const stageRef = useRef(null);
+
+  useEffect(() => {
+    stageRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [lesson.id]);
+
   return (
     <>
-      <div className="stage">
+      <div className="stage" ref={stageRef}>
         <AnimatePresence mode="wait">
           <motion.div
             key={lesson.id}

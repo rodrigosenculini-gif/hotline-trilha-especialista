@@ -179,6 +179,74 @@ details.acc summary::-webkit-details-marker{display:none;}
 .b-restart, .b-choice button{background:var(--ember); border:none; color:var(--paper); font-weight:700; padding:12px 22px; border-radius:12px; margin-top:12px; font-size:14px;}
 .b-choice{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
 
+/* ---------- MOUNTAIN TRAIL ---------- */
+.mountain-trail{
+  position:fixed; left:24px; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:2px; z-index:12; max-height:80vh; overflow:visible;
+}
+.trail-row{display:flex; align-items:center; gap:10px; position:relative; padding:6px 0;}
+.trail-right{flex-direction:row-reverse; align-self:flex-end;}
+.trail-connector{position:absolute; left:17px; top:-14px; width:2px; height:14px; background:rgba(255,255,255,.35);}
+.trail-right .trail-connector{left:auto; right:17px;}
+.trail-node{
+  width:36px; height:36px; border-radius:50%; background:rgba(0,0,0,.4); border:2px solid var(--amber);
+  display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff;
+  position:relative; flex:0 0 auto;
+}
+.trail-node.done{background:var(--amber); color:#1a1305;}
+.trail-node.current{box-shadow:0 0 0 6px rgba(255,176,32,.25); background:var(--ember);}
+.trail-player{position:absolute; width:34px; height:34px; object-fit:contain; left:100%; margin-left:8px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));}
+.trail-right .trail-player{left:auto; right:100%; margin-left:0; margin-right:8px;}
+.trail-label{font-size:11px; color:rgba(255,255,255,.85); font-family:'IBM Plex Mono'; max-width:120px; background:rgba(0,0,0,.35); padding:3px 8px; border-radius:8px;}
+
+.stop-title-big{
+  position:relative; z-index:12; color:#fff; text-align:center; font-size:22px; font-weight:900;
+  font-family:'Archivo'; text-shadow:0 3px 10px rgba(0,0,0,.6);
+}
+
+/* ---------- THEME SCENERY ---------- */
+.scenery{position:absolute; inset:0; overflow:hidden; z-index:1;}
+.scenery-praia .sun{position:absolute; top:8%; right:12%; width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, #fff6c8, #ffcf5e); box-shadow:0 0 60px 20px rgba(255,220,120,.5);}
+.scenery-praia .sea{position:absolute; bottom:0; left:0; right:0; height:35%; background:linear-gradient(180deg,#1f6a9e,#124a72);}
+.scenery-praia .wave{position:absolute; bottom:32%; left:-10%; right:-10%; height:14px; background:rgba(255,255,255,.35); border-radius:50%;}
+.scenery-praia .wave-2{bottom:28%; opacity:.6;}
+.scenery-praia .palm{position:absolute; bottom:30%; left:8%; font-size:60px;}
+.scenery-praia .palm-2{left:auto; right:10%; bottom:32%; font-size:44px;}
+
+.scenery-autodromo .track{position:absolute; bottom:15%; left:0; right:0; height:70px; background:#232028; border-top:4px dashed #fff3; border-bottom:4px dashed #fff3;}
+.scenery-autodromo .car{position:absolute; bottom:16%; font-size:40px;}
+.scenery-autodromo .flag{position:absolute; top:14%; right:14%; font-size:50px;}
+
+.scenery-nuvens .cloud{position:absolute; font-size:50px; filter:drop-shadow(0 6px 10px rgba(0,0,0,.15));}
+.scenery-nuvens .cloud-1{top:14%; left:10%;}
+.scenery-nuvens .cloud-2{top:24%; right:16%;}
+.scenery-nuvens .cloud-3{top:40%; left:40%;}
+.scenery-nuvens .sunbeam{position:absolute; inset:0; background:radial-gradient(600px 400px at 50% 0%, rgba(255,255,255,.5), transparent 70%);}
+
+.scenery-galaxia .stars{position:absolute; inset:0; background-image:radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1.5px 1.5px at 70% 60%, #fff, transparent), radial-gradient(1px 1px at 40% 80%, #fff, transparent), radial-gradient(1.5px 1.5px at 85% 20%, #fff, transparent), radial-gradient(1px 1px at 55% 45%, #fff, transparent); opacity:.8;}
+.scenery-galaxia .planet-1{position:absolute; top:16%; right:14%; font-size:70px;}
+.scenery-galaxia .planet-2{position:absolute; bottom:20%; left:12%; font-size:44px;}
+.scenery-galaxia .shooting-star{position:absolute; top:20%; left:0; width:2px; height:2px; box-shadow:0 0 0 1px #fff; opacity:0;}
+
+.scenery-partida{background:radial-gradient(1000px 700px at 50% 30%, #3a2c1e, #14100b 70%);}
+.scenery-partida .torch{position:absolute; top:35%; font-size:34px;}
+.scenery-partida .torch-1{left:20%;}
+.scenery-partida .torch-2{right:20%;}
+.scenery-partida .door{position:absolute; top:38%; left:50%; transform:translateX(-50%); font-size:64px;}
+.scenery-partida .door.door-open{filter:brightness(1.4) drop-shadow(0 0 20px #ffb020);}
+.run-through{position:absolute; top:42%; width:56px; transform:translateY(-50%);}
+
+/* ---------- BATTLE STAGE BANNER ---------- */
+.stage-banner{
+  position:relative; z-index:14; background:rgba(0,0,0,.55); color:#fff; font-family:'IBM Plex Mono';
+  font-size:13px; padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,.2);
+}
+.fighter-lane{position:relative; display:flex; align-items:center; height:100px;}
+.fighter-img{width:80px; filter:drop-shadow(0 10px 14px rgba(0,0,0,.5)); position:relative; z-index:2;}
+.sword-swing{position:absolute; top:20px; font-size:32px; z-index:3;}
+.ghost-lane{position:relative; display:flex; flex-direction:column; align-items:center;}
+.ghost-emoji{font-size:80px; filter:drop-shadow(0 10px 14px rgba(0,0,0,.5));}
+
 /* ---------- FINAL SCREEN ---------- */
 .finale-scene{position:fixed; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:24px;}
 .finale-card{max-width:640px; background:rgba(10,8,14,.7); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.15); border-radius:22px; padding:44px; text-align:center;}

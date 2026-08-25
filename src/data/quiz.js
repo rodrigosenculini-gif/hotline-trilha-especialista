@@ -19,16 +19,22 @@ export const QUESTIONS = [
   { q: 'Para contratar a Antecipação do Saque FGTS, o cliente precisa:', options: ['Ter aderido ao Saque-Aniversário e autorizar o banco no aplicativo FGTS.', 'Apenas possuir carteira assinada.', 'Apenas ter conta em banco.', 'Ser aposentado.'], correct: 0 },
   { q: 'Em qual plataforma são realizados a maior parte dos atendimentos da Hotline?', options: ['CRM.', 'Chatwoot.', 'Excel.', 'WhatsApp Business.'], correct: 1 },
   { q: 'Qual é um dos principais objetivos da Hotline?', options: ['Ser apenas a maior empresa em número de vendas.', 'Oferecer atendimento humanizado, soluções inovadoras e gerar resultados para clientes e parceiros.', 'Trabalhar apenas com um único produto.', 'Atender exclusivamente por telefone.'], correct: 1 },
+  // Novas — fluxograma de vendas, cenários A a D
+  { q: 'Cliente diz que não recebeu o valor combinado, mas a conta informada está incorreta. Qual o próximo passo correto?', options: ['Encerrar o atendimento e orientar a abrir um novo depois.', 'Pedir o extrato da conta informada e verificar erros de digitação antes de refazer.', 'Repassar direto para o apoio do banco sem checar nada.', 'Ignorar e aguardar o cliente perceber o erro sozinho.'], correct: 1 },
+  { q: 'No Cenário B, o cliente entende o produto mas acha o valor liberado muito baixo. Antes de negociar, o que deve ser verificado primeiro?', options: ['Se existe possibilidade de valor maior em outro banco.', 'Se o cliente tem outro número de telefone.', 'Se o cliente mora perto de uma agência.', 'Se o cliente já indicou algum amigo.'], correct: 0 },
+  { q: 'Um cliente não responde há mais de 1 hora após o primeiro follow-up. Segundo o fluxo de atendimento, a ação recomendada é:', options: ['Esperar até o fim do dia sem novo contato.', 'Ligação + áudio, reforçando a urgência da oportunidade.', 'Bloquear o número do cliente.', 'Enviar apenas um emoji.'], correct: 1 },
+  { q: 'No Cenário D (cliente estressado), quando o motivo é uma dúvida não esclarecida, o fluxo indica:', options: ['Encerrar o atendimento imediatamente.', 'Voltar ao Cenário A e tratar a dúvida na origem.', 'Ignorar o tom do cliente e repetir a oferta.', 'Transferir para outro vendedor sem explicação.'], correct: 1 },
+  { q: 'Na finalização do atendimento, quando o cliente está satisfeito mas a proposta não foi aprovada, o correto é:', options: ['Finalizar sem dar retorno nenhum.', 'Agradecer o contato, explicar o motivo e deixar o canal aberto para retorno.', 'Insistir para ele aceitar outro produto na força.', 'Cobrar o cliente por ter perdido tempo.'], correct: 1 },
 ];
 
-// Fases do jogo: o fantasma (e o cenário) trocam a cada 4 perguntas,
-// ficando progressivamente mais obscuro.
+// Fases do jogo: fantasma, cor, gosma (ataque) e cenário da masmorra
+// trocam juntos a cada 4 perguntas, ficando progressivamente mais obscuro.
 export const GHOST_STAGES = [
-  { name: 'Fantasma da Enrolação', color: '#8fd3ff', slime: '#5fb8e8', darkness: 0 },
-  { name: 'Sombra do Silêncio', color: '#b48fff', slime: '#8a5fe8', darkness: 0.18 },
-  { name: 'Assombração Apressada', color: '#ff9a5a', slime: '#e86f2b', darkness: 0.34 },
-  { name: 'Espectro Grosseiro', color: '#ff5a7a', slime: '#e82b52', darkness: 0.5 },
-  { name: 'Fantasma Desatento', color: '#8fffb0', slime: '#2be874', darkness: 0.64 },
+  { name: 'Fantasma da Enrolação', emoji: '👻', color: '#8fd3ff', slimeEmoji: '💧', slimeColor: '#5fb8e8', darkness: 0 },
+  { name: 'Sombra do Silêncio', emoji: '🫥', color: '#b48fff', slimeEmoji: '🟣', slimeColor: '#8a5fe8', darkness: 0.2 },
+  { name: 'Assombração Apressada', emoji: '💨', color: '#ff9a5a', slimeEmoji: '🔥', slimeColor: '#e86f2b', darkness: 0.38 },
+  { name: 'Espectro Grosseiro', emoji: '😠', color: '#ff5a7a', slimeEmoji: '🟥', slimeColor: '#e82b52', darkness: 0.55 },
+  { name: 'Fantasma Desatento', emoji: '🌀', color: '#8fffb0', slimeEmoji: '🟢', slimeColor: '#2be874', darkness: 0.7 },
 ];
 
 export const HOT_HIT_LINES = [

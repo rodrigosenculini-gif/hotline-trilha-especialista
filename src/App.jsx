@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import Intro from './components/lesson/Intro';
 import LessonView from './components/lesson/LessonView';
 import BoardScene from './components/board/BoardScene';
@@ -6,12 +7,13 @@ import BattleGame from './components/battle/BattleGame';
 import FinalScreen from './components/FinalScreen';
 import Mascot from './components/mascot/Mascot';
 import { FLAT_LESSONS } from './data/lessons';
-import { LOGO_IMG, MASCOT_GREETING, MASCOT_TIPS } from './data/config';
+import { LOGO_IMG, MASCOT_GREETING, MASCOT_IMG, MASCOT_TIPS } from './data/config';
 
 const MIN_SCORE_FOR_BONUS = 14; // de 20 perguntas
 
 export default function App() {
-  const [phase, setPhase] = useState('intro'); // intro | lessons | board | battle | final
+  // intro | lessons | board | door-to-battle | battle | final
+  const [phase, setPhase] = useState('intro');
   const [lessonIndex, setLessonIndex] = useState(0);
   const [xp, setXp] = useState(0);
   const [bonusReached, setBonusReached] = useState(false);
@@ -30,8 +32,6 @@ export default function App() {
   function handleNextLesson() {
     if (lessonIndex >= FLAT_LESSONS.length - 1) {
       setPhase('board');
-      setMascotMsg('Chegou a hora do tabuleiro! Cada bloco te dá XP. Bora!');
-      setShowBubble(true);
       return;
     }
     goToLesson(lessonIndex + 1);
@@ -47,7 +47,8 @@ export default function App() {
   }
 
   function handleBoardFinish() {
-    setPhase('battle');
+    setPhase('door-to-battle');
+    setTimeout(() => setPhase('battle'), 1500);
   }
 
   function handleVictory(correctCount) {
@@ -82,6 +83,23 @@ export default function App() {
       )}
 
       {phase === 'board' && <BoardScene onFinish={handleBoardFinish} onXpGain={handleXpGain} />}
+
+      {phase === 'door-to-battle' && (
+        <div className="board-scene theme-partida">
+          <div className="scenery scenery-partida">
+            <div className="door door-open">🚪</div>
+            <motion.img
+              src={MASCOT_IMG}
+              alt="Esquentadinho"
+              className="run-through"
+              initial={{ left: '20%', opacity: 1 }}
+              animate={{ left: '50%', opacity: 0 }}
+              transition={{ duration: 1.3, ease: 'easeIn' }}
+            />
+          </div>
+          <div className="stop-title-big">Entrando na masmorra...</div>
+        </div>
+      )}
 
       {phase === 'battle' && <BattleGame onVictory={handleVictory} />}
 
