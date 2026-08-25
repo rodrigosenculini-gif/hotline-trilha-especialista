@@ -204,6 +204,20 @@ details.acc summary::-webkit-details-marker{display:none;}
   font-family:'Archivo'; text-shadow:0 3px 10px rgba(0,0,0,.6);
 }
 
+/* ---------- MOUNTAIN SCENE ---------- */
+.mountain-wrap{position:absolute; inset:0; overflow:hidden; z-index:1;}
+.mountain-zoom{position:absolute; inset:0; width:100%; height:100%;}
+.mountain-svg{position:absolute; inset:0; width:100%; height:100%;}
+.peak-shape{fill:rgba(255,255,255,.08); stroke:rgba(255,255,255,.35); stroke-width:.3;}
+.mountain-path{fill:none; stroke:rgba(255,176,32,.8); stroke-width:.5; stroke-dasharray:1.2 1.2;}
+.mountain-node{fill:rgba(0,0,0,.5); stroke:var(--amber); stroke-width:.4;}
+.mountain-node.done{fill:var(--amber);}
+.mountain-node.current{fill:var(--ember); stroke:#fff;}
+.mountain-flag{position:absolute; transform:translate(-50%,-160%); font-size:11px; color:#fff; text-align:center;}
+.peak-num{background:rgba(0,0,0,.5); border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono';}
+.peak-accent{font-size:22px; filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));}
+.mountain-hero{position:absolute; width:46px; transform:translate(-50%,-92%); filter:drop-shadow(0 6px 10px rgba(0,0,0,.5)); z-index:2;}
+
 /* ---------- THEME SCENERY ---------- */
 .scenery{position:absolute; inset:0; overflow:hidden; z-index:1;}
 .scenery-praia .sun{position:absolute; top:8%; right:12%; width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, #fff6c8, #ffcf5e); box-shadow:0 0 60px 20px rgba(255,220,120,.5);}

@@ -125,3 +125,15 @@ export const BOARD_STOPS = [
     ],
   },
 ];
+
+// Coordenadas (% da tela) de cada ponto na trilha da montanha —
+// ascendente da esquerda pra direita, ficando mais íngreme no final.
+export const MOUNTAIN_POINTS = [
+  { x: 8, y: 84 },
+  { x: 20, y: 66 },
+  { x: 33, y: 74 },
+  { x: 47, y: 50 },
+  { x: 60, y: 62 },
+  { x: 75, y: 34 },
+  { x: 90, y: 16 },
+];

@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BOARD_STOPS, THEMES, XP_PER_BLOCK } from '../../data/board';
 import { MASCOT_IMG } from '../../data/config';
-import ThemeScenery from './ThemeScenery';
-import MountainTrail from './MountainTrail';
+import MountainScene from './MountainScene';
 
 const themeById = Object.fromEntries(THEMES.map((t) => [t.id, t]));
 
-// phase: 'run-door' -> 'scenery' -> 'question' -> 'blocks' -> (next stop) ... -> 'complete'
+// phase: 'mountain-overview' -> 'question' -> 'blocks' -> (avança ponto) ... -> 'complete'
 export default function BoardScene({ onFinish, onXpGain }) {
   const [stopIndex, setStopIndex] = useState(0);
   const [phase, setPhase] = useState('run-door');
@@ -19,21 +18,21 @@ export default function BoardScene({ onFinish, onXpGain }) {
   const isLastStop = stopIndex === BOARD_STOPS.length - 1;
   const isLastBlock = blockIndex === stop.blocks.length - 1;
 
-  // Corrida pela porta acontece só uma vez, no começo da trilha.
+  // Esquentadinho corre pela porta, depois zoom out mostrando a montanha inteira,
+  // depois zoom automático no ponto 1 — tudo sem precisar clicar em nada.
   useEffect(() => {
     if (phase === 'run-door') {
-      const t = setTimeout(() => setPhase('scenery'), 1400);
+      const t = setTimeout(() => setPhase('mountain-overview'), 1400);
       return () => clearTimeout(t);
     }
   }, [phase]);
 
-  // Cenário aparece por um instante antes da pergunta.
   useEffect(() => {
-    if (phase === 'scenery') {
-      const t = setTimeout(() => setPhase('question'), 1100);
+    if (phase === 'mountain-overview') {
+      const t = setTimeout(() => setPhase('question'), 2200);
       return () => clearTimeout(t);
     }
-  }, [phase, stopIndex]);
+  }, [phase]);
 
   function handleAnswer(i) {
     if (answered !== null) return;
@@ -56,18 +55,16 @@ export default function BoardScene({ onFinish, onXpGain }) {
       return;
     }
     setStopIndex((s) => s + 1);
-    setPhase('scenery');
+    setPhase('question');
   }
+
+  const zoomedOut = phase === 'mountain-overview';
 
   if (phase === 'complete') {
     return (
       <div className={`board-scene ${theme.bg}`}>
-        <ThemeScenery themeId={stop.theme} />
-        <motion.div
-          className="finale-scene"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
+        <MountainScene currentIndex={stopIndex} zoomedOut={false} />
+        <motion.div className="finale-scene" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <motion.div
             className="finale-card"
             initial={{ scale: 0.85, opacity: 0 }}
@@ -86,15 +83,7 @@ export default function BoardScene({ onFinish, onXpGain }) {
 
   return (
     <div className={`board-scene ${theme.bg}`}>
-      <AnimatePresence mode="wait">
-        {phase !== 'run-door' && (
-          <motion.div key="scenery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <ThemeScenery themeId={stop.theme} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {phase === 'run-door' && (
+      {phase === 'run-door' ? (
         <div className="scenery scenery-partida">
           <div className="door">🚪</div>
           <motion.img
@@ -106,20 +95,21 @@ export default function BoardScene({ onFinish, onXpGain }) {
             transition={{ duration: 1.2, ease: 'easeOut' }}
           />
         </div>
+      ) : (
+        <MountainScene currentIndex={stopIndex} zoomedOut={zoomedOut} />
       )}
 
-      {phase !== 'run-door' && <MountainTrail currentIndex={stopIndex} />}
-
       <AnimatePresence mode="wait">
-        {phase === 'scenery' && (
+        {phase === 'mountain-overview' && (
           <motion.div
-            key={`scenery-title-${stop.id}`}
+            key="overview-title"
             className="stop-title-big"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            style={{ position: 'absolute', bottom: 40, left: 0, right: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {stop.number}. {stop.title}
+            A trilha te espera. Bora subir! 🏔️
           </motion.div>
         )}
 
