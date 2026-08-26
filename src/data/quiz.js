@@ -25,6 +25,12 @@ export const QUESTIONS = [
   { q: 'Um cliente não responde há mais de 1 hora após o primeiro follow-up. Segundo o fluxo de atendimento, a ação recomendada é:', options: ['Esperar até o fim do dia sem novo contato.', 'Ligação + áudio, reforçando a urgência da oportunidade.', 'Bloquear o número do cliente.', 'Enviar apenas um emoji.'], correct: 1 },
   { q: 'No Cenário D (cliente estressado), quando o motivo é uma dúvida não esclarecida, o fluxo indica:', options: ['Encerrar o atendimento imediatamente.', 'Voltar ao Cenário A e tratar a dúvida na origem.', 'Ignorar o tom do cliente e repetir a oferta.', 'Transferir para outro vendedor sem explicação.'], correct: 1 },
   { q: 'Na finalização do atendimento, quando o cliente está satisfeito mas a proposta não foi aprovada, o correto é:', options: ['Finalizar sem dar retorno nenhum.', 'Agradecer o contato, explicar o motivo e deixar o canal aberto para retorno.', 'Insistir para ele aceitar outro produto na força.', 'Cobrar o cliente por ter perdido tempo.'], correct: 1 },
+  // Novas — playbooks de produto
+  { q: 'No Crédito CLT, se o cliente já tem um empréstimo ativo, a operação passa a ser chamada de:', options: ['Crédito novo.', 'Refinanciamento (troco).', 'FGTS.', 'Cross sell.'], correct: 1 },
+  { q: 'No Refinanciamento CLT, qual é a ordem certa pra apresentar a proposta ao cliente?', options: ['Troco → parcela nova → parcela atual.', 'Parcela atual → nova condição → troco.', 'Só falar do troco, sem citar parcelas.', 'Parcela nova → troco → parcela atual.'], correct: 1 },
+  { q: 'No Empréstimo na Conta de Luz, antes de seguir com a proposta, é indispensável confirmar:', options: ['Se o cliente tem outros empréstimos.', 'A titularidade da conta de energia.', 'O horário de pico de consumo.', 'Se o cliente já é cliente Hotline.'], correct: 1 },
+  { q: 'Sobre a Antecipação do Saque-Aniversário do FGTS, o que é verdade?', options: ['Não há consulta ao SPC/Serasa.', 'Só pode ser feita uma vez na vida.', 'Precisa de aval de terceiros.', 'Só atende quem tem carteira assinada.'], correct: 0 },
+  { q: 'No Crédito do Trabalhador (e-consignado), a contratação é feita:', options: ['Só presencialmente em agência.', '100% pela Carteira de Trabalho Digital (CTPS Digital).', 'Apenas por indicação de outro banco.', 'Só para quem já é aposentado.'], correct: 1 },
 ];
 
 // Fases do jogo: fantasma, cor, gosma (ataque) e cenário da masmorra

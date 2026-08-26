@@ -7,8 +7,9 @@ import {
   MAX_LIVES,
 } from '../../data/quiz';
 import { MASCOT_IMG } from '../../data/config';
+import { trackResposta } from '../../lib/track';
 
-export default function BattleGame({ onVictory }) {
+export default function BattleGame({ onVictory, sessaoId, vendedor }) {
   const [questions] = useState(() => buildGameQuestions());
   const [qi, setQi] = useState(0);
   const [lives, setLives] = useState(MAX_LIVES);
@@ -34,6 +35,17 @@ export default function BattleGame({ onVictory }) {
     if (selected !== null || modal) return;
     setSelected(i);
     const isCorrect = i === q.correct;
+
+    trackResposta({
+      sessaoId,
+      vendedor,
+      origem: 'masmorra',
+      etapaId: `pergunta-${qi + 1}`,
+      pergunta: q.text,
+      respostaDada: q.options[i],
+      respostaCorreta: q.options[q.correct],
+      acertou: isCorrect,
+    });
 
     if (isCorrect) {
       setFx('attack-ghost');

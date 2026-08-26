@@ -3,23 +3,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BOARD_STOPS, THEMES, XP_PER_BLOCK } from '../../data/board';
 import { MASCOT_IMG } from '../../data/config';
 import MountainScene from './MountainScene';
+import { trackResposta } from '../../lib/track';
 
 const themeById = Object.fromEntries(THEMES.map((t) => [t.id, t]));
 
-// phase: 'mountain-overview' -> 'question' -> 'blocks' -> (avança ponto) ... -> 'complete'
-export default function BoardScene({ onFinish, onXpGain }) {
-  const [stopIndex, setStopIndex] = useState(0);
-  const [phase, setPhase] = useState('run-door');
+// phase: 'mountain-overview' -> 'question' -> 'feedback' -> 'blocks' -> (avança ponto) ... -> 'complete'
+export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, modoRevisao = false, stopIndexInicial = 0, apenasEssaEtapa = false, onRegistrarPasso }) {
+  const [stopIndex, setStopIndex] = useState(stopIndexInicial);
+  const [phase, setPhase] = useState(modoRevisao ? 'question' : 'run-door');
   const [blockIndex, setBlockIndex] = useState(0);
   const [answered, setAnswered] = useState(null);
+  const [acertou, setAcertou] = useState(null);
 
   const stop = BOARD_STOPS[stopIndex];
   const theme = themeById[stop.theme];
   const isLastStop = stopIndex === BOARD_STOPS.length - 1;
   const isLastBlock = blockIndex === stop.blocks.length - 1;
 
-  // Esquentadinho corre pela porta, depois zoom out mostrando a montanha inteira,
-  // depois zoom automático no ponto 1 — tudo sem precisar clicar em nada.
+  useEffect(() => {
+    onRegistrarPasso?.(`Montanha · ${stop.number}. ${stop.title}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stopIndex]);
+
   useEffect(() => {
     if (phase === 'run-door') {
       const t = setTimeout(() => setPhase('mountain-overview'), 1400);
@@ -37,17 +42,36 @@ export default function BoardScene({ onFinish, onXpGain }) {
   function handleAnswer(i) {
     if (answered !== null) return;
     setAnswered(i);
-    setTimeout(() => {
-      setAnswered(null);
-      setPhase('blocks');
-      setBlockIndex(0);
-    }, 1000);
+    const correto = i === stop.question.correct;
+    setAcertou(correto);
+    trackResposta({
+      sessaoId,
+      vendedor,
+      origem: 'montanha',
+      etapaId: stop.id,
+      pergunta: stop.question.text,
+      respostaDada: stop.question.options[i],
+      respostaCorreta: stop.question.options[stop.question.correct],
+      acertou: correto,
+    });
+    setTimeout(() => setPhase('feedback'), 900);
+  }
+
+  function handleFeedbackContinue() {
+    setAnswered(null);
+    setAcertou(null);
+    setPhase('blocks');
+    setBlockIndex(0);
   }
 
   function handleNextBlock() {
     onXpGain(XP_PER_BLOCK);
     if (!isLastBlock) {
       setBlockIndex((b) => b + 1);
+      return;
+    }
+    if (apenasEssaEtapa) {
+      onFinish();
       return;
     }
     if (isLastStop) {
@@ -72,9 +96,9 @@ export default function BoardScene({ onFinish, onXpGain }) {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
             <img src={MASCOT_IMG} alt="Esquentadinho" />
-            <h2 style={{ marginBottom: 12 }}>Trilha concluída!</h2>
-            <p>Agora você está pronto para os Jogos Do Especialista! Se prepare!</p>
-            <button className="block-next" onClick={onFinish}>Entrar na masmorra →</button>
+            <h2 style={{ marginBottom: 12 }}>{modoRevisao ? 'Revisão concluída!' : 'Trilha concluída!'}</h2>
+            <p>{modoRevisao ? 'Agora sim, bora continuar de onde parou!' : 'Agora você está pronto para os Jogos Do Especialista! Se prepare!'}</p>
+            <button className="block-next" onClick={onFinish}>{modoRevisao ? 'Continuar →' : 'Entrar na masmorra →'}</button>
           </motion.div>
         </motion.div>
       </div>
@@ -109,7 +133,7 @@ export default function BoardScene({ onFinish, onXpGain }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            A trilha te espera. Bora subir! 🏔️
+            {modoRevisao ? 'Vamos rever esse ponto 🔎' : 'A trilha te espera. Bora subir! 🏔️'}
           </motion.div>
         )}
 
@@ -149,6 +173,35 @@ export default function BoardScene({ onFinish, onXpGain }) {
           </motion.div>
         )}
 
+        {phase === 'feedback' && (
+          <motion.div
+            key={`fb-${stop.id}`}
+            className="block-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="block-card"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              style={{ textAlign: 'center' }}
+            >
+              <div style={{ fontSize: 40, marginBottom: 10 }}>{acertou ? '🎉' : '💡'}</div>
+              <h3 style={{ color: acertou ? 'var(--amber)' : '#fff' }}>
+                {acertou ? 'Isso mesmo, acertou!' : 'Que pena, não foi dessa vez'}
+              </h3>
+              <p>
+                {acertou
+                  ? 'Vamos ver mais sobre esse assunto.'
+                  : 'Mas vamos analisar melhor para entender tudo!'}
+              </p>
+              <button className="block-next" onClick={handleFeedbackContinue}>Continuar →</button>
+            </motion.div>
+          </motion.div>
+        )}
+
         {phase === 'blocks' && (
           <motion.div
             key={`blocks-${stop.id}-${blockIndex}`}
@@ -169,9 +222,16 @@ export default function BoardScene({ onFinish, onXpGain }) {
                 ))}
               </div>
               <h3>{stop.blocks[blockIndex].heading}</h3>
-              <p dangerouslySetInnerHTML={{ __html: stop.blocks[blockIndex].body }} />
+              <p
+                style={modoRevisao ? { fontSize: 15.5, lineHeight: 1.75 } : undefined}
+                dangerouslySetInnerHTML={{
+                  __html: modoRevisao && stop.blocks[blockIndex].detalhado
+                    ? stop.blocks[blockIndex].detalhado
+                    : stop.blocks[blockIndex].body,
+                }}
+              />
               <button className="block-next" onClick={handleNextBlock}>
-                {isLastBlock && isLastStop ? 'Concluir trilha →' : isLastBlock ? 'Seguir viagem →' : 'Continuar →'}
+                {isLastBlock && isLastStop ? (modoRevisao ? 'Concluir revisão →' : 'Concluir trilha →') : isLastBlock ? 'Seguir viagem →' : 'Continuar →'}
               </button>
             </motion.div>
           </motion.div>
