@@ -21,7 +21,7 @@ export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, mod
   const isLastBlock = blockIndex === stop.blocks.length - 1;
 
   useEffect(() => {
-    onRegistrarPasso?.(`Montanha · ${stop.number}. ${stop.title}`);
+    onRegistrarPasso?.(`Montanha · ${stop.number}. ${stop.title}`, stopIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stopIndex]);
 
