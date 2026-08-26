@@ -15,12 +15,35 @@ import { getSessaoId } from './lib/track';
 const MIN_SCORE_FOR_BONUS = 14; // de 20 perguntas
 const PLAYBOOK_URL = 'https://hotline-playbook.vercel.app';
 
+const PROGRESSO_KEY = 'trilha_progresso_v1';
+
+// Fases transitórias (animações/telas de passagem) não fazem sentido pra
+// retomar exatamente nelas — ao restaurar, caem numa fase estável equivalente.
+const FASE_RESTAURAVEL = {
+  'door-to-battle': 'battle',
+};
+
+function carregarProgresso() {
+  try {
+    const raw = localStorage.getItem(PROGRESSO_KEY);
+    if (!raw) return null;
+    const dados = JSON.parse(raw);
+    if (dados.phase) dados.phase = FASE_RESTAURAVEL[dados.phase] || dados.phase;
+    return dados;
+  } catch {
+    return null;
+  }
+}
+
 export default function App() {
+  const progressoSalvo = useState(() => carregarProgresso())[0];
+
   // intro | lessons | board | trilha-escolha | trilha-revisao-lista | trilha-revisao-etapa
   // | playbook | door-to-battle | battle | pos-derrota-escolha | final
-  const [phase, setPhase] = useState('intro');
-  const [lessonIndex, setLessonIndex] = useState(0);
-  const [xp, setXp] = useState(0);
+  const [phase, setPhase] = useState(progressoSalvo?.phase || 'intro');
+  const [lessonIndex, setLessonIndex] = useState(progressoSalvo?.lessonIndex ?? 0);
+  const [xp, setXp] = useState(progressoSalvo?.xp ?? 0);
+  const [boardStopIndex, setBoardStopIndex] = useState(progressoSalvo?.boardStopIndex ?? 0);
   const [bonusReached, setBonusReached] = useState(false);
   const [mascotMsg, setMascotMsg] = useState(MASCOT_GREETING);
   const [showBubble, setShowBubble] = useState(true);
@@ -29,13 +52,27 @@ export default function App() {
   const [showMenu, setShowMenu] = useState(false);
 
   // parada(s) da montanha que erraram ou foram revisadas -> viram pergunta extra na masmorra
-  const [stopsParaReforcar, setStopsParaReforcar] = useState([]); // [{ stopId, motivo }]
+  const [stopsParaReforcar, setStopsParaReforcar] = useState(progressoSalvo?.stopsParaReforcar || []); // [{ stopId, motivo }]
 
   // usado só pra remontar o BattleGame do zero quando o usuário escolhe "refazer a masmorra"
   const [battleKey, setBattleKey] = useState(0);
 
   // histórico de passos já percorridos, pra alimentar o menu "onde eu já passei"
-  const [passos, setPassos] = useState([{ label: 'Início da trilha', fase: 'intro' }]);
+  const [passos, setPassos] = useState(progressoSalvo?.passos || [{ label: 'Início da trilha', fase: 'intro' }]);
+
+  // Salva o progresso a cada mudança relevante, pra continuar de onde parou
+  // se fechar/atualizar o navegador. Some sozinho quando a trilha termina.
+  useEffect(() => {
+    if (phase === 'final') {
+      try { localStorage.removeItem(PROGRESSO_KEY); } catch { /* ignora */ }
+      return;
+    }
+    try {
+      localStorage.setItem(PROGRESSO_KEY, JSON.stringify({
+        phase, lessonIndex, xp, boardStopIndex, stopsParaReforcar, passos,
+      }));
+    } catch { /* ignora */ }
+  }, [phase, lessonIndex, xp, boardStopIndex, stopsParaReforcar, passos]);
 
   function registrarPasso(label, extra) {
     setPassos((p) => {
@@ -202,7 +239,11 @@ export default function App() {
           onFinish={handleBoardFinish}
           onXpGain={handleXpGain}
           sessaoId={sessaoId}
-          onRegistrarPasso={(label, stopIndex) => registrarPasso(label, { fase: 'board', stopIndex })}
+          stopIndexInicial={boardStopIndex}
+          onRegistrarPasso={(label, stopIndex) => {
+            registrarPasso(label, { fase: 'board', stopIndex })
+            if (typeof stopIndex === 'number') setBoardStopIndex(stopIndex)
+          }}
           onRespostaMontanha={handleRespostaMontanha}
         />
       )}
