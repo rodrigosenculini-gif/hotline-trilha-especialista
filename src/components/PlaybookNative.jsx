@@ -1,71 +1,276 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Versão nativa (sem iframe) dos playbooks, direto dentro da trilha —
-// permite rastrear com certeza quando cada produto foi visto, e mostrar
+// Versão nativa (sem iframe) dos playbooks — mesmo conteúdo completo do
+// site original (hotline-playbook), só que embutido direto na trilha, o
+// que permite rastrear com certeza quando cada produto foi visto e mostrar
 // tarjas de destaque reais (sem depender de comunicação entre sites).
 const PRODUTOS = [
   {
     id: 'clt',
     nome: 'Crédito CLT',
     icone: '💼',
-    resumo: 'Empréstimo consignado pra quem tem carteira assinada.',
-    pontos: [
-      'Pode ser crédito novo ou refinanciamento (troco), se o cliente já tem crédito ativo.',
-      'Desconto direto em folha — parcelas saem do salário.',
-      'Comece sempre pelo benefício/valor, nunca pela burocracia.',
-      'Frase-chave: "Consegui uma condição pra você e vou te mostrar como aproveitar."',
+    resumo: 'Empréstimo consignado para carteira assinada',
+    hero: [
+      { label: 'Produto', value: 'Crédito CLT (novo ou refin/troco)' },
+      { label: 'Cliente', value: 'Carteira assinada, margem disponível' },
+      { label: 'Diferencial', value: 'Desconto direto em folha' },
+      { label: 'Objetivo', value: 'Fechar e encaminhar ao WhatsApp' },
+    ],
+    essencial: [
+      { title: 'Pode ser novo ou refinanciamento', body: 'Se o cliente já tem crédito ativo, é refinanciamento (troco). Se não tem nada, é crédito novo — o discurso muda.' },
+      { title: 'Desconto em folha', body: 'As parcelas saem direto do salário. Só entre em detalhes de burocracia se o cliente perguntar.' },
+      { title: 'Depende da margem', body: 'A aprovação e o valor dependem da margem consignável disponível do trabalhador.' },
+      { title: 'Comece pelo benefício', body: 'Fale primeiro do valor/condição — nunca abra a conversa falando de burocracia ou prazo.' },
+    ],
+    highlight: '"Consegui uma condição para você e vou te mostrar como aproveitar."',
+    flow: ['1. Identifique · Origem do lead', '2. Pergunte · Já tem crédito ativo?', '3. Apresente · Valor disponível', '4. Negocie · Se houver objeção', '5. Feche · Leve ao WhatsApp'],
+    cenarios: [
+      { title: 'Dúvida sobre o produto', body: 'Explique o produto e, se já tem crédito ativo, que se trata de refinanciamento (troco); se não tem, que é um crédito novo.' },
+      { title: 'Interesse — valor bom', body: 'Apresente a condição original (maior troco/valor). Aceitou → fechar e levar pro WhatsApp. Não aceitou → negociação.' },
+      { title: 'Interesse — valor baixo', body: 'Negocie prazo para tentar aumentar o valor. Avalie cross-sell com outro produto se fizer sentido.' },
+      { title: 'Interesse — reprovado', body: 'Não prometa nada. Explique que não foi dessa vez e agende um follow-up para quando surgirem novos limites.' },
+      { title: 'Não respondeu', body: 'Ligue primeiro. Sem atender, aguarde 24h e mande WhatsApp com foto chamativa + áudio explicando o retorno.' },
+      { title: 'Cliente estressado', body: 'Acalme e descubra o motivo real: dúvida (esclareça), valor (renegocie) ou "não quero mais" (respeite e não insista).' },
+    ],
+    negociacao: [
+      { step: 'Apresente a condição original', detail: 'Maior troco/valor — é sempre a prioridade.' },
+      { step: 'Ajuste prazo/parcela', detail: 'Se o cliente reclamar, ofereça um novo prazo (o valor liberado muda).' },
+      { step: 'Outra adequação', detail: 'Se disponível, avalie um produto ou condição alternativa.' },
+      { step: 'Feche', detail: 'Cliente aceitou → leve para o WhatsApp e formalize.' },
+    ],
+    objections: [
+      { q: '"É só desconto em folha, isso me prejudica?"', a: 'Não. É justamente por ser descontado em folha que a taxa costuma ser mais baixa que outras modalidades — sem boleto pra se preocupar.' },
+      { q: '"O valor está baixo."', a: 'Posso verificar um prazo diferente pra tentar aumentar o valor disponível — mas isso muda a parcela.' },
+      { q: '"Não tenho interesse."', a: 'Tudo bem. Só pra eu entender: é o valor, o prazo, ou você não precisa do crédito agora?' },
+      { q: '"Vou pensar."', a: 'Claro! Ficou alguma dúvida específica que eu possa esclarecer antes da sua decisão?' },
+    ],
+    regrasOuro: [
+      'Nunca prometa prazo de liberação.',
+      'Foque na condição atual e na disponibilidade do valor.',
+      'Sempre ligue antes de mandar mensagem no WhatsApp.',
+      'Só entre em detalhes de desconto em folha se o cliente perguntar.',
+    ],
+    checklist: [
+      'Identifiquei se é crédito novo ou refinanciamento',
+      'Apresentei o valor antes do prazo',
+      'Tentei negociar antes de perder o cliente',
+      'Não prometi prazo de liberação',
+      'Levei o cliente para o WhatsApp',
+      'Registrei o motivo caso ele tenha recusado',
     ],
   },
   {
     id: 'refin',
     nome: 'Refinanciamento CLT',
     icone: '🔄',
-    resumo: 'Reorganiza o contrato ativo do cliente e libera um troco.',
-    pontos: [
-      'NÃO é um empréstimo novo — é a reorganização do contrato ativo.',
-      'Sempre existe troco: esse é o principal atrativo pro cliente.',
-      'Venda primeiro o troco, explique depois que não é crédito novo.',
-      'Frase-chave: "Não é um empréstimo novo. É o refinanciamento do crédito que você já tem."',
+    resumo: 'Refinancia o contrato ativo e libera troco',
+    hero: [
+      { label: 'Produto', value: 'Refinanciamento CLT' },
+      { label: 'Cliente', value: 'Já possui crédito ativo' },
+      { label: 'Diferencial', value: 'Troco + facilidade online' },
+      { label: 'Objetivo', value: 'Fechar e levar ao WhatsApp' },
+    ],
+    essencial: [
+      { title: 'Não é um empréstimo novo', body: 'O cliente já tem um empréstimo ativo. O refinanciamento reorganiza esse contrato e libera um novo valor.' },
+      { title: 'Sempre existe troco', body: 'O principal atrativo é o valor que pode ser liberado após o refinanciamento.' },
+      { title: 'Pode melhorar a parcela', body: 'A proposta pode trazer uma parcela menor, conforme as condições disponíveis.' },
+      { title: 'É uma condição específica', body: 'O banco disponibiliza o refinanciamento para determinados perfis de clientes.' },
+    ],
+    highlight: '"Não estou te oferecendo um empréstimo novo. É o refinanciamento do crédito que você já possui, com possibilidade de liberar um valor extra."',
+    flow: ['1. Identifique · Nome + banco', '2. Contextualize · Crédito ativo', '3. Desperte · Troco disponível', '4. Mostre · Valores da proposta', '5. Leve · WhatsApp'],
+    cenarios: [
+      { title: 'Abertura da ligação', body: '"Oi, [NOME]! Aqui é [VENDEDORA], falo em nome do [BANCO]. Seu crédito ativo tem uma condição disponível para refinanciamento, com liberação de valor extra. Posso te explicar rapidinho?"' },
+      { title: 'Cliente topa ouvir', body: '"Hoje você tem uma parcela de R$ [ATUAL]. Nessa condição, conseguimos refinanciar e liberar aproximadamente R$ [TROCO], com nova parcela de R$ [NOVA]."' },
+      { title: 'Apresentação da proposta', body: 'Mostre em ordem: ① parcela atual → ② nova condição → ③ troco → ④ pergunta se o valor faz sentido hoje.' },
+      { title: 'Cliente reclama do prazo', body: 'Explique primeiro o benefício da proposta atual. Só depois apresente a possibilidade de ajustar prazo (o valor liberado pode mudar).' },
+    ],
+    negociacao: [
+      { step: 'Apresente a condição original', detail: 'É a condição prioritária — nunca comece já negociando.' },
+      { step: 'Descubra a objeção', detail: 'Entenda o que realmente incomodou antes de tentar resolver.' },
+      { step: 'Trabalhe o benefício', detail: 'Reforce o valor do troco e a nova condição de parcela.' },
+      { step: 'Negocie se necessário', detail: 'Se for prazo/parcela, avalie uma condição alternativa.' },
+      { step: 'Feche', detail: 'Cliente aceitou → WhatsApp → formalização.' },
+    ],
+    objections: [
+      { q: '"Não quero fazer outro empréstimo."', a: 'Não é um empréstimo novo — é o refinanciamento do contrato que você já tem. O atual é quitado dentro da operação e a diferença vira o seu troco.' },
+      { q: '"Quanto eu vou pegar?"', a: 'Na condição disponível hoje, o troco é de aproximadamente R$ X. Esse valor seria útil pra você?' },
+      { q: '"Minha parcela vai aumentar?"', a: 'Hoje sua parcela é R$ X e nessa condição fica R$ Y — o que muda é o contrato e o valor que você recebe.' },
+      { q: '"Não quero aumentar minha dívida."', a: 'Você não está pegando outro empréstimo por fora — o contrato existente entra no refinanciamento, e depois de quitar o saldo anterior, você recebe o valor adicional.' },
+      { q: '"O prazo é muito grande."', a: 'Esse prazo é justamente o que permite chegar nesse valor de troco. Posso verificar outro prazo, mas o valor liberado pode mudar.' },
+      { q: '"Não confio, pode ser golpe."', a: 'Você está certo em ter cuidado. Vou te mandar tudo pelo WhatsApp pra você conferir antes de qualquer formalização.' },
+    ],
+    regrasOuro: [
+      'Venda primeiro o troco — o cliente quer saber quanto vai receber.',
+      'Explique sempre que não é crédito novo (maior confusão do cliente).',
+      'Nunca comece negociando — apresente a condição original primeiro.',
+      'Prazo é uma objeção negociável, não uma promessa.',
+      'Faça perguntas antes de tentar responder a uma objeção que não entendeu.',
+      'Nunca prometa o que não controla, principalmente prazo de liberação.',
+    ],
+    checklist: [
+      'Citei o banco', 'Expliquei que é refinanciamento', 'Mostrei o valor do troco', 'Mostrei a nova parcela',
+      'Identifiquei a objeção real', 'Não prometi prazo de liberação', 'Levei o cliente para o WhatsApp', 'Enviei as condições por escrito',
     ],
   },
   {
     id: 'energia',
     nome: 'Empréstimo Conta de Luz',
     icone: '💡',
-    resumo: 'Crédito com parcela embutida na fatura de energia.',
-    pontos: [
-      'Pagamento vem junto com a conta de luz, sem boleto extra.',
-      'Aprovação mais fácil — a conta de luz serve como garantia (bom pra negativados).',
-      'Sempre confirme a titularidade da conta antes de seguir.',
-      'Sempre avise sobre o risco de corte de energia em caso de não pagamento.',
+    resumo: 'Crédito com parcela na fatura de energia',
+    hero: [
+      { label: 'Produto', value: 'Empréstimo na Conta de Luz' },
+      { label: 'Cliente', value: 'Titular da conta de energia' },
+      { label: 'Diferencial', value: 'Aprovação facilitada, sem boleto' },
+      { label: 'Objetivo', value: 'Assinatura digital + biometria' },
+    ],
+    essencial: [
+      { title: 'Pagamento embutido na fatura', body: 'O valor contratado entra direto na conta de luz, sem boleto extra — parcelas fixas durante o contrato.' },
+      { title: 'Aprovação mais fácil', body: 'O banco enxerga a conta de luz como garantia, o que facilita a aprovação até para negativados.' },
+      { title: 'Titularidade é obrigatória', body: 'O contrato precisa estar no nome de quem está solicitando o crédito.' },
+      { title: 'Valores e prazos', body: 'Geralmente de R$ 400 a R$ 4.000, parcelado de 3 a 24 meses, conforme perfil e distribuidora.' },
+    ],
+    highlight: '"Você tem um dinheiro disponível garantido pelo seu histórico de energia. O pagamento é facilitado — vem junto com a conta."',
+    flow: ['1. Fatura · Enviar conta recente', '2. Análise · Perfil e consumo', '3. Proposta · Valor e prazo', '4. Assinatura · Contrato + biometria', '5. Liberação · Em até 24h'],
+    cenarios: [
+      { title: 'Dúvida sobre como funciona', body: 'Explique que o pagamento é embutido na conta de luz, sem boleto extra. Confirme se a conta está no nome do cliente — o desconto começa na fatura seguinte.' },
+      { title: 'Interesse — valor bom', body: 'Apresente valor e prazo. Aceitou → enviar link de assinatura. Não aceitou → negociação.' },
+      { title: 'Interesse — valor baixo', body: 'Aumente o prazo para tentar elevar o valor disponível.' },
+      { title: 'Não aprovado', body: 'Explique que a análise é baseada no histórico da fatura e sugira follow-up.' },
+      { title: '"Não quero mexer na conta de luz"', body: 'Explique que é a única forma de pagamento, mas que as parcelas são diluídas em até 24 meses.' },
+      { title: '"A taxa está muito alta"', body: 'Trabalhe a negociação: condição com menor CET (parcela maior) ou prazo maior (parcela menor, custo total maior).' },
+    ],
+    negociacao: [
+      { step: 'Condição com menor CET', detail: 'Parcela pode ser maior, mas custo total menor.' },
+      { step: 'Ajustar o prazo', detail: 'Baixa a parcela, mas aumenta o custo total — sempre checando se cabe no orçamento do cliente.' },
+      { step: 'Regra principal', detail: 'Não assuste com juros. Foque no valor da "parcela extra" que vai aparecer na conta de luz.' },
+    ],
+    objections: [
+      { q: '"Isso vai aumentar minha conta de luz pra sempre?"', a: 'Não — é uma parcela fixa durante o prazo contratado. Depois que quita, a conta volta ao normal.' },
+      { q: '"E se eu não pagar a conta?"', a: 'É importante saber: como a parcela vem na fatura, o não pagamento pode levar ao corte de energia — por isso o valor da parcela precisa caber no seu orçamento.' },
+      { q: '"A taxa está muito alta."', a: 'Posso verificar uma condição com prazo diferente para reduzir a parcela — vamos comparar as opções?' },
+      { q: '"Tenho restrição no CPF, consigo?"', a: 'Sim, a aprovação aqui é facilitada porque a garantia é o histórico da sua conta de luz, não a consulta ao CPF.' },
+    ],
+    regrasOuro: [
+      'Nunca cobre taxas antecipadas ou peça senhas — isso é golpe.',
+      'Sempre informe o risco de corte de energia em caso de não pagamento.',
+      'Confirme a titularidade da conta antes de seguir com a proposta.',
+      'Não é possível novo contrato enquanto houver um ativo na mesma unidade consumidora.',
+    ],
+    checklist: [
+      'Confirmei a titularidade da conta de energia', 'Expliquei que o pagamento vem na fatura',
+      'Alertei sobre o risco de corte em caso de não pagamento', 'Apresentei valor antes de falar de taxa',
+      'Enviei o link de assinatura com biometria', 'Confirmei que não há outro contrato ativo na mesma unidade',
     ],
   },
   {
     id: 'fgts',
     nome: 'FGTS Saque-Aniversário',
     icone: '🏦',
-    resumo: 'Antecipação de até 5 parcelas do próprio FGTS do cliente.',
-    pontos: [
-      'É antecipação do dinheiro que já é do cliente, não um empréstimo novo.',
-      'Sem parcela mensal — desconta direto do saldo do FGTS a cada aniversário.',
-      'Ótimo pra negativados: não há consulta ao SPC/Serasa.',
-      'Carência de 90 dias após aderir ao Saque-Aniversário.',
+    resumo: 'Antecipação de até 5 parcelas do fundo',
+    hero: [
+      { label: 'Produto', value: 'Antecipação do Saque-Aniversário' },
+      { label: 'Cliente', value: 'Aderiu ao Saque-Aniversário' },
+      { label: 'Diferencial', value: 'Sem parcela mensal, sem SPC/Serasa' },
+      { label: 'Objetivo', value: 'Simular e assinar digitalmente' },
+    ],
+    essencial: [
+      { title: 'Dinheiro que já é do cliente', body: 'É a antecipação de parcelas futuras do próprio FGTS — não é um empréstimo novo pago do bolso.' },
+      { title: 'Sem parcela mensal', body: 'O pagamento é debitado automaticamente do saldo do FGTS a cada aniversário — não pesa na renda.' },
+      { title: 'Ótimo para negativados', body: 'Não há consulta ao SPC/Serasa — o saldo do FGTS é a garantia.' },
+      { title: 'Novas regras 2025/2026', body: 'Parcela entre R$ 100 e R$ 500, até 5 parcelas (3 a partir de nov/2026) e carência de 90 dias após adesão.' },
+    ],
+    highlight: '"Você tem um dinheiro parado no FGTS e eu consegui liberar ele hoje pra você, sem pagar parcela mensal e sem mexer no seu salário."',
+    flow: ['1. Adesão · Saque-Aniversário no app', '2. Carência · 90 dias', '3. Autorização · Consulta ao saldo', '4. Simulação · Valor disponível', '5. Assinatura · Contrato digital'],
+    cenarios: [
+      { title: 'Dúvida sobre o produto', body: 'Explique que é antecipação do Saque-Aniversário. Se ainda não aderiu, oriente a adesão no app e avise sobre a carência de 90 dias.' },
+      { title: 'Interesse — valor bom', body: 'Apresente a condição e o prazo, reforçando que não há parcela mensal. Aceitou → assinatura digital. Não aceitou → negociação.' },
+      { title: 'Interesse — valor baixo', body: 'Se abaixo de R$ 100, lembre que essa é a parcela mínima — tente aumentar o prazo disponível.' },
+      { title: 'Sem saldo suficiente', body: 'Explique o limite de R$ 500 por parcela e sugira follow-up para quando o saldo aumentar.' },
+      { title: '"Não quero mexer no meu dinheiro"', body: 'Explique que é uma antecipação — troca de dívida cara por juros mais baixos, não uma perda.' },
+      { title: '"Tenho medo de perder o emprego"', body: 'Explique com cautela: em demissão sem justa causa, ele recebe a multa de 40% e o saldo do saque-aniversário fica retido.' },
+    ],
+    negociacao: [
+      { step: 'Condição original', detail: 'Menor prazo, menor custo total — sempre a prioridade.' },
+      { step: 'Aumentar o prazo', detail: 'Dilui o valor e aumenta o montante liberado, mas com CET maior.' },
+      { step: 'Cross-sell', detail: 'Se já antecipou tudo, ofereça o Consignado CLT como alternativa.' },
+    ],
+    objections: [
+      { q: '"Isso não vai comprometer meu salário?"', a: 'Não — o pagamento é descontado direto do saldo do FGTS, a cada aniversário. Seu salário não é afetado.' },
+      { q: '"E se eu for demitido?"', a: 'Nesse caso você recebe a multa de 40% normalmente; o saldo do saque-aniversário fica retido até o fim do contrato.' },
+      { q: '"Por que preciso esperar 90 dias?"', a: 'É uma exigência das novas regras após a adesão ao Saque-Aniversário — não depende de mim, é do próprio FGTS.' },
+      { q: '"Vou perder meu FGTS todo?"', a: 'Não. Você só antecipa uma parte das parcelas futuras, dentro dos limites de R$ 100 a R$ 500 por parcela.' },
+    ],
+    regrasOuro: [
+      'Nunca peça senha do app FGTS ou taxas antecipadas.',
+      'Nunca prometa liberação em menos tempo do que os 90 dias de carência permitem.',
+      'Sempre informe o limite de R$ 500 por parcela.',
+      'Contratação só pode ser feita uma vez por ano — não prometa uma segunda rodada no mesmo período.',
+    ],
+    checklist: [
+      'Confirmei se o cliente já aderiu ao Saque-Aniversário', 'Expliquei a carência de 90 dias, se aplicável',
+      'Reforcei que não há parcela mensal', 'Expliquei o que acontece em caso de demissão',
+      'Apresentei os limites de valor por parcela', 'Enviei o contrato para assinatura digital',
     ],
   },
   {
     id: 'trabalhador',
     nome: 'Crédito do Trabalhador',
     icone: '📱',
-    resumo: 'e-Consignado contratado 100% pela Carteira de Trabalho Digital.',
-    pontos: [
-      'Contratação centralizada pelo app CTPS Digital, sem convênio prévio.',
-      'Margem de até 35% da remuneração líquida do trabalhador.',
-      'Cliente compara até 100 propostas e tem 24h pra escolher a melhor.',
-      'Garantias (FGTS, verbas rescisórias) são opcionais e reduzem a taxa.',
+    resumo: 'e-Consignado via Carteira de Trabalho Digital',
+    hero: [
+      { label: 'Produto', value: 'Crédito do Trabalhador (e-consignado)' },
+      { label: 'Cliente', value: 'CLT, doméstico ou rural' },
+      { label: 'Diferencial', value: 'Contratação 100% pela CTPS Digital' },
+      { label: 'Objetivo', value: 'Simular e comparar propostas' },
+    ],
+    essencial: [
+      { title: 'Contratação centralizada', body: 'Tudo acontece pelo app CTPS Digital — não depende de convênio prévio entre banco e empregador.' },
+      { title: 'Margem de até 35%', body: 'O trabalhador pode comprometer até 35% da remuneração líquida com as parcelas.' },
+      { title: 'Taxa com teto', body: 'Juros limitados a até 1,99% ao mês — vale reforçar isso na comparação com outros créditos.' },
+      { title: 'Garantias reduzem a taxa', body: 'Verbas rescisórias, multa do FGTS e até 10% do saldo do FGTS podem ser usados como garantia.' },
+    ],
+    highlight: '"Você compara até 100 propostas em um só lugar, direto no app do governo — e tem até 24h pra escolher a melhor."',
+    flow: ['1. Simulação · No app CTPS Digital', '2. Propostas · Até 100 instituições', '3. Comparação · Até 24h para decidir', '4. Garantias · Verbas, FGTS, multa', '5. Contratação · Direto no app'],
+    cenarios: [
+      { title: 'Dúvida sobre o produto', body: 'Explique que é um consignado feito pelo app CTPS Digital, com desconto direto na folha e taxa com teto de 1,99% a.m.' },
+      { title: 'Interesse — quer saber a taxa', body: 'Mostre como oferecer uma garantia (verbas rescisórias, FGTS) pode reduzir ainda mais a taxa da proposta.' },
+      { title: 'Cliente com medo de comprometer o FGTS', body: 'Explique que o uso da garantia é opcional e que ele autoriza um bloqueio parcial, usado apenas se houver demissão.' },
+      { title: 'Cliente já usou o limite de margem', body: 'Verifique alternativas como o Empréstimo na Conta de Luz ou o FGTS Saque-Aniversário como cross-sell.' },
+    ],
+    negociacao: [
+      { step: 'Apresente sem garantia primeiro', detail: 'Mostre a taxa padrão antes de complicar com garantias.' },
+      { step: 'Ofereça a garantia se a taxa incomodar', detail: 'Verbas rescisórias ou FGTS reduzem a taxa — explique o trade-off com clareza.' },
+      { step: 'Compare propostas', detail: 'Reforce que ele tem até 24h para comparar as até 100 ofertas no app.' },
+    ],
+    objections: [
+      { q: '"Se eu for demitido, perco tudo?"', a: 'Não tudo — até 100% da multa do FGTS pode ser usada pra quitar o saldo devedor, mas dentro do limite da garantia oferecida.' },
+      { q: '"Por que preciso usar o app do governo?"', a: 'É assim que a modalidade funciona — centraliza as propostas de várias instituições num só lugar, o que te dá mais segurança e opções de comparação.' },
+      { q: '"A taxa de vocês é a melhor?"', a: 'Vamos comparar: no app você vê todas as propostas recebidas e escolhe a mais vantajosa dentro de 24h.' },
+      { q: '"Não confio em dar o FGTS como garantia."', a: 'Entendo — o uso do FGTS como garantia é opcional. Posso te mostrar a proposta sem essa garantia também, só que com taxa um pouco maior.' },
+    ],
+    regrasOuro: [
+      'Nunca prometa aprovação fora da simulação oficial no app.',
+      'Seja claro sobre o que acontece com a garantia em caso de demissão.',
+      'Sempre informe o teto de 35% de margem.',
+      'Reforce que ele pode comparar até 100 propostas antes de decidir.',
+    ],
+    checklist: [
+      'Expliquei que a contratação é pela CTPS Digital', 'Informei o teto de margem consignável (35%)',
+      'Expliquei as opções de garantia e seus efeitos', 'Comparei taxa com e sem garantia',
+      'Reforcei o prazo de 24h para comparar propostas',
     ],
   },
 ];
+
+function Secao({ titulo, children }) {
+  return (
+    <div style={{ marginTop: 18 }}>
+      <p className="section-label" style={{ marginBottom: 8 }}>{titulo}</p>
+      {children}
+    </div>
+  );
+}
 
 export default function PlaybookNative({ onContinuar }) {
   const [abertoId, setAbertoId] = useState(null);
@@ -73,6 +278,7 @@ export default function PlaybookNative({ onContinuar }) {
 
   const todosVistos = vistos.length >= PRODUTOS.length;
   const proximoNaoVisto = PRODUTOS.find((p) => !vistos.includes(p.id));
+  const produtoAberto = PRODUTOS.find((x) => x.id === abertoId);
 
   function abrir(p) {
     setAbertoId(p.id);
@@ -82,7 +288,7 @@ export default function PlaybookNative({ onContinuar }) {
   return (
     <div className="board-scene theme-galaxia" style={{ padding: '24px', overflowY: 'auto' }}>
       <div className="stop-title-big" style={{ marginBottom: 6 }}>Antes da masmorra, dá uma olhada nos nossos produtos</div>
-      <p style={{ color: 'var(--muted, #b8b0a0)', marginBottom: 18, textAlign: 'center' }}>
+      <p style={{ color: '#b8b0a0', marginBottom: 18, textAlign: 'center' }}>
         {todosVistos ? 'Você já viu todos! Pode seguir pra masmorra.' : `Clique em cada produto pra ver os detalhes (${vistos.length}/${PRODUTOS.length} vistos)`}
       </p>
 
@@ -95,12 +301,7 @@ export default function PlaybookNative({ onContinuar }) {
               key={p.id}
               onClick={() => abrir(p)}
               className="block-card"
-              style={{
-                cursor: 'pointer',
-                textAlign: 'left',
-                border: visto ? '2px solid #79a98a' : ehProximo ? '2px solid var(--amber)' : '1px solid var(--line)',
-                position: 'relative',
-              }}
+              style={{ cursor: 'pointer', textAlign: 'left', border: visto ? '2px solid #79a98a' : ehProximo ? '2px solid var(--amber)' : '1px solid var(--line)', position: 'relative' }}
               whileHover={{ y: -3 }}
             >
               {ehProximo && (
@@ -131,31 +332,95 @@ export default function PlaybookNative({ onContinuar }) {
       </button>
 
       <AnimatePresence>
-        {abertoId && (
-          <div className="block-overlay" onClick={() => setAbertoId(null)}>
+        {produtoAberto && (
+          <div className="block-overlay" onClick={() => setAbertoId(null)} style={{ alignItems: 'flex-start', paddingTop: 40 }}>
             <motion.div
               className="block-card"
-              style={{ maxWidth: 520 }}
+              style={{ maxWidth: 640, maxHeight: '85vh', overflowY: 'auto', textAlign: 'left' }}
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
             >
-              {(() => {
-                const p = PRODUTOS.find((x) => x.id === abertoId);
-                return (
-                  <>
-                    <div style={{ fontSize: 34, marginBottom: 6 }}>{p.icone}</div>
-                    <h3>{p.nome}</h3>
-                    <ul style={{ marginTop: 10, paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      {p.pontos.map((pt, i) => (
-                        <li key={i} style={{ fontSize: 13.5 }}>{pt}</li>
-                      ))}
-                    </ul>
-                    <button className="block-next" style={{ marginTop: 16 }} onClick={() => setAbertoId(null)}>Entendi →</button>
-                  </>
-                );
-              })()}
+              <div style={{ fontSize: 34, marginBottom: 4 }}>{produtoAberto.icone}</div>
+              <h2 style={{ fontSize: 22 }}>{produtoAberto.nome}</h2>
+              <p style={{ marginTop: 4 }}>{produtoAberto.resumo}</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 8, marginTop: 14 }}>
+                {produtoAberto.hero.map((h, i) => (
+                  <div key={i} style={{ background: 'var(--bg-elev-2)', border: '1px solid var(--line)', borderRadius: 10, padding: '8px 10px' }}>
+                    <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--amber)' }}>{h.label}</div>
+                    <div style={{ fontSize: 13, marginTop: 2 }}>{h.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              <Secao titulo="01 · O essencial">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
+                  {produtoAberto.essencial.map((e, i) => (
+                    <div key={i} style={{ background: 'var(--bg-elev-2)', border: '1px solid var(--line)', borderRadius: 10, padding: 10 }}>
+                      <strong style={{ fontSize: 13 }}>{e.title}</strong>
+                      <p style={{ fontSize: 12.5, marginTop: 4 }}>{e.body}</p>
+                    </div>
+                  ))}
+                </div>
+              </Secao>
+
+              <Secao titulo="02 · Frase-chave">
+                <p style={{ fontStyle: 'italic', color: 'var(--amber)', fontSize: 14 }}>{produtoAberto.highlight}</p>
+              </Secao>
+
+              <Secao titulo="03 · Fluxo de abordagem">
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {produtoAberto.flow.map((f, i) => (
+                    <div key={i} style={{ background: 'var(--bg-elev-2)', border: '1px solid var(--line)', borderRadius: 8, padding: '6px 10px', fontSize: 12 }}>{f}</div>
+                  ))}
+                </div>
+              </Secao>
+
+              <Secao titulo="04 · Cenários">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {produtoAberto.cenarios.map((c, i) => (
+                    <div key={i} style={{ background: 'var(--bg-elev-2)', border: '1px solid var(--line)', borderRadius: 10, padding: 10 }}>
+                      <strong style={{ fontSize: 13 }}>{c.title}</strong>
+                      <p style={{ fontSize: 12.5, marginTop: 4 }}>{c.body}</p>
+                    </div>
+                  ))}
+                </div>
+              </Secao>
+
+              <Secao titulo="05 · Negociação">
+                <ol style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {produtoAberto.negociacao.map((n, i) => (
+                    <li key={i} style={{ fontSize: 13 }}><strong>{n.step}</strong> — {n.detail}</li>
+                  ))}
+                </ol>
+              </Secao>
+
+              <Secao titulo="06 · Objeções">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {produtoAberto.objections.map((o, i) => (
+                    <div key={i} style={{ background: 'var(--bg-elev-2)', border: '1px solid var(--line)', borderRadius: 10, padding: 10 }}>
+                      <div style={{ fontSize: 13, color: 'var(--amber)' }}>{o.q}</div>
+                      <p style={{ fontSize: 12.5, marginTop: 4 }}>{o.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </Secao>
+
+              <Secao titulo="07 · Regras de ouro">
+                <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {produtoAberto.regrasOuro.map((r, i) => <li key={i} style={{ fontSize: 13 }}>{r}</li>)}
+                </ul>
+              </Secao>
+
+              <Secao titulo="08 · Checklist final">
+                <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {produtoAberto.checklist.map((c, i) => <li key={i} style={{ fontSize: 13 }}>☐ {c}</li>)}
+                </ul>
+              </Secao>
+
+              <button className="block-next" style={{ marginTop: 18 }} onClick={() => setAbertoId(null)}>Entendi →</button>
             </motion.div>
           </div>
         )}

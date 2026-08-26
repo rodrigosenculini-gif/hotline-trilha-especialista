@@ -121,7 +121,7 @@ details.acc summary::-webkit-details-marker{display:none;}
 .mascot-btn img{width:100%; height:100%; object-fit:contain;}
 
 /* ---------- BOARD ---------- */
-.board-scene{position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; z-index:10;}
+.board-scene{position:fixed; inset:0; padding-top:64px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; z-index:10;}
 .theme-partida{background:radial-gradient(1000px 700px at 50% 20%, #3a2c1e, #14100b 70%);}
 .theme-praia{background:linear-gradient(180deg,#ffd98a 0%, #ff9a5e 35%, #2f7dae 70%, #14507a 100%);}
 .theme-autodromo{background:linear-gradient(180deg,#5b2b6b 0%, #2a1a3a 55%, #0e0a16 100%);}
@@ -208,7 +208,7 @@ details.acc summary::-webkit-details-marker{display:none;}
 }
 
 /* ---------- MOUNTAIN SCENE ---------- */
-.mountain-wrap{position:absolute; inset:0; overflow:hidden; z-index:1;}
+.mountain-wrap{position:absolute; top:64px; right:0; bottom:0; left:0; overflow:hidden; z-index:1;}
 .mountain-zoom{position:absolute; inset:0; width:100%; height:100%;}
 .mountain-svg{position:absolute; inset:0; width:100%; height:100%;}
 .peak-shape{fill:rgba(255,255,255,.08); stroke:rgba(255,255,255,.35); stroke-width:.3;}
@@ -222,7 +222,7 @@ details.acc summary::-webkit-details-marker{display:none;}
 .mountain-hero{position:absolute; width:46px; transform:translate(-50%,-92%); filter:drop-shadow(0 6px 10px rgba(0,0,0,.5)); z-index:2;}
 
 /* ---------- THEME SCENERY ---------- */
-.scenery{position:absolute; inset:0; overflow:hidden; z-index:1;}
+.scenery{position:absolute; top:64px; right:0; bottom:0; left:0; overflow:hidden; z-index:1;}
 .scenery-praia .sun{position:absolute; top:8%; right:12%; width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, #fff6c8, #ffcf5e); box-shadow:0 0 60px 20px rgba(255,220,120,.5);}
 .scenery-praia .sea{position:absolute; bottom:0; left:0; right:0; height:35%; background:linear-gradient(180deg,#1f6a9e,#124a72);}
 .scenery-praia .wave{position:absolute; bottom:32%; left:-10%; right:-10%; height:14px; background:rgba(255,255,255,.35); border-radius:50%;}

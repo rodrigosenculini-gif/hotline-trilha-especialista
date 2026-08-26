@@ -143,7 +143,10 @@ export default function App() {
     // principalmente pra ver o que já foi percorrido
   }
 
-  const showHeader = ['intro', 'lessons', 'board', 'trilha-escolha', 'trilha-revisao-lista', 'trilha-revisao-etapa', 'playbook', 'battle', 'pos-derrota-escolha'].includes(phase);
+  // O menu nunca aparece durante a masmorra (battle) — senão dá pra "espiar"
+  // se a resposta certa foi acertada e voltar. Também não faz sentido durante
+  // a transição da porta.
+  const showHeader = ['intro', 'lessons', 'board', 'trilha-escolha', 'trilha-revisao-lista', 'trilha-revisao-etapa', 'playbook', 'pos-derrota-escolha'].includes(phase);
 
   return (
     <div className="app-shell">
