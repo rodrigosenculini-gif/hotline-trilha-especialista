@@ -340,7 +340,7 @@ export default function App() {
         </div>
       )}
 
-      {phase === 'final' && <FinalScreen minScoreReached={bonusReached} />}
+      {phase === 'final' && <FinalScreen minScoreReached={bonusReached} sessaoId={sessaoId} />}
 
       {(phase === 'intro' || phase === 'lessons') && (
         <Mascot message={mascotMsg} show={showBubble} onToggle={() => setShowBubble((s) => !s)} />

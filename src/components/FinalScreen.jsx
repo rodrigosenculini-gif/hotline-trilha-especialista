@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MASCOT_IMG } from '../data/config';
+import { atualizarVendedorSessao } from '../lib/track';
 
 const DASHBOARD_URL = 'https://dashboard-seven-pearl-93.vercel.app';
 const REGISTER_ENDPOINT = `${DASHBOARD_URL}/api/dashboard?type=vendedoras_register`;
 const NOME_PATTERN = /^[A-ZÀ-Ý][a-zà-ÿ]+(?:\s[A-ZÀ-Ý][a-zà-ÿ]+)+$/u;
 
-export default function FinalScreen({ minScoreReached }) {
+export default function FinalScreen({ minScoreReached, sessaoId }) {
   const [nome, setNome] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
@@ -37,6 +38,9 @@ export default function FinalScreen({ minScoreReached }) {
         setEnviando(false);
         return;
       }
+      // Preenche retroativamente o nome em todas as respostas já registradas
+      // dessa sessão (montanha + masmorra), já que o nome só existe agora.
+      atualizarVendedorSessao(sessaoId, nomeTrim);
       const url = `${DASHBOARD_URL}/?onboarding=1&senha=${encodeURIComponent(senha.trim())}`;
       window.location.href = url;
     } catch (err) {

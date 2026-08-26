@@ -33,6 +33,23 @@ export function trackResposta({ sessaoId, vendedor, origem, etapaId, pergunta, r
   }
 }
 
+export function atualizarVendedorSessao(sessaoId, vendedor) {
+  try {
+    fetch(`${SUPABASE_URL}/rest/v1/trilha_respostas?sessao_id=eq.${encodeURIComponent(sessaoId)}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ vendedor }),
+    }).catch(() => {});
+  } catch {
+    // nunca deixa isso quebrar o fluxo de cadastro
+  }
+}
+
 export function getSessaoId() {
   try {
     let id = sessionStorage.getItem('trilha_sessao_id');
