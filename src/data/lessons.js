@@ -25,12 +25,24 @@ export const MODULES = [
         content: `
           <p class="lede">Três pilares guiam toda decisão da Hotline — do atendimento ao cliente até a forma como tratamos uns aos outros.</p>
           <div class="grid2">
+            <div class="card"><h3>Dedicação aos clientes</h3><p>Colocar o cliente no centro de cada decisão, buscando soluções que realmente façam sentido para a vida dele.</p></div>
+            <div class="card"><h3>Nossas pessoas</h3><p>Valorizar quem faz a Hotline acontecer todos os dias, com respeito, escuta e oportunidades de crescimento.</p></div>
+            <div class="card"><h3>Integridade</h3><p>Agir com transparência e ética em cada atendimento, negociação e relação — dentro e fora da empresa.</p></div>
+          </div>
+          <div class="grid2">
             <div class="card"><h3>Missão</h3><p>Conectar-se aos nossos clientes de forma personalizada, garantindo um atendimento humanizado, com soluções inovadoras e tecnológicas — e resultados eficientes através de vendas positivas.</p></div>
             <div class="card"><h3>Visão</h3><p>Ser referência nacional de empresa humanizada, guiada pelo propósito de gerar resultados sustentáveis e experiências que encantem clientes internos e externos.</p></div>
           </div>
           <div class="card">
             <h3>Valores</h3>
-            <span class="tag">Respeito</span><span class="tag">Credibilidade</span><span class="tag">Somos Hot</span><span class="tag">Comprometimento</span><span class="tag">Autenticidade</span><span class="tag">Agilidade</span>
+            <div class="valores-lista">
+              <div class="valor-item"><span class="tag">Respeito</span><p>Tratar cada pessoa — cliente ou colega — com consideração e educação, sempre.</p></div>
+              <div class="valor-item"><span class="tag">Credibilidade</span><p>Cumprir o que é prometido e construir confiança em cada interação.</p></div>
+              <div class="valor-item"><span class="tag">Somos Hot</span><p>Ter energia, entusiasmo e orgulho de fazer parte da Hotline.</p></div>
+              <div class="valor-item"><span class="tag">Comprometimento</span><p>Assumir responsabilidade pelos resultados, do início ao fim do atendimento.</p></div>
+              <div class="valor-item"><span class="tag">Autenticidade</span><p>Ser genuíno na forma de se comunicar e de se relacionar com o cliente.</p></div>
+              <div class="valor-item"><span class="tag">Agilidade</span><p>Responder rápido e resolver com eficiência, sem perder a qualidade.</p></div>
+            </div>
           </div>
         `,
       },
@@ -38,13 +50,14 @@ export const MODULES = [
         id: 'resultados',
         title: 'Resultados',
         content: `
-          <p class="lede">14 anos de história — de 6 posições de venda a referência nacional em soluções financeiras.</p>
+          <p class="lede">16 anos de história — de 6 posições de venda a referência nacional em soluções financeiras.</p>
           <div class="timeline">
             <div class="t-row"><div class="t-year">2010</div><div class="t-rail"><div class="t-dot"></div><div class="t-bar"></div></div><div class="t-body"><h4>Fundação</h4><p>Início com 6 posições de venda e um grande sonho: ser referência no segmento.</p></div></div>
             <div class="t-row"><div class="t-year">2014</div><div class="t-rail"><div class="t-dot"></div><div class="t-bar"></div></div><div class="t-body"><h4>Melhor do Brasil</h4><p>Conquistamos o topo em vendas de TV por assinatura, já com mais de 50 posições de venda.</p></div></div>
             <div class="t-row"><div class="t-year">2019</div><div class="t-rail"><div class="t-dot"></div><div class="t-bar"></div></div><div class="t-body"><h4>Setor bancário</h4><p>Mudamos de ramo. Começamos pequenos de novo — e viramos referência em qualidade e volume com o banco BMG.</p></div></div>
             <div class="t-row"><div class="t-year">2023</div><div class="t-rail"><div class="t-dot"></div><div class="t-bar"></div></div><div class="t-body"><h4>Liderança em FGTS</h4><p>À frente de toda a rede BMG, liderando o maior volume de vendas de FGTS.</p></div></div>
-            <div class="t-row"><div class="t-year">2024</div><div class="t-rail"><div class="t-dot"></div></div><div class="t-body"><h4>Nova Era Hotline</h4><p>14 anos de história, soluções estratégicas de vendas e cuidado com as pessoas. Aqui, vendas é o nosso maior negócio.</p></div></div>
+            <div class="t-row"><div class="t-year">2024</div><div class="t-rail"><div class="t-dot"></div><div class="t-bar"></div></div><div class="t-body"><h4>Nova Era Hotline</h4><p>16 anos de história, soluções estratégicas de vendas e cuidado com as pessoas. Aqui, vendas é o nosso maior negócio.</p></div></div>
+            <div class="t-row"><div class="t-year">2026</div><div class="t-rail"><div class="t-dot"></div></div><div class="t-body"><h4>Reinventar para alcançar</h4><p>Transformamos tecnologia em estratégia para revolucionar nossa atuação no empréstimo CLT.</p></div></div>
           </div>
         `,
       },
@@ -169,6 +182,15 @@ export const MODULES = [
             <ul class="plain"><li>Entender a necessidade</li><li>Explicar o funcionamento do produto</li><li>Apresentar os benefícios</li><li>Esclarecer dúvidas</li><li>Confirmar se o cliente está confortável</li><li>Conduzir para a próxima etapa</li></ul>
           </div>
           <div class="card">
+            <h3>Canais de comunicação</h3>
+            <ul class="plain">
+              <li>Comunique-se de forma escrita para gerar conexão</li>
+              <li>Utilize termos como: entendo, faz sentido, podemos avaliar, uma possibilidade é..., o que seria mais importante para você? entre outros</li>
+              <li>Durante a negociação, explane através de áudio rápido, porém, objetivo</li>
+              <li>Como última estratégia, telefone ao cliente</li>
+            </ul>
+          </div>
+          <div class="card">
             <h3>Benefícios, não só produto</h3>
             <div class="example">
               <div class="ex-line ex-bad">❌ "É um empréstimo consignado."</div>
@@ -195,6 +217,8 @@ export const MODULES = [
               <li>Demonstre que leu a mensagem dele</li>
               <li>Responda exatamente à dúvida apresentada</li>
               <li>Evite respostas automáticas sem relação com o contexto</li>
+              <li>Seja cordial, dê bom dia ou boa tarde como introdução ao seu atendimento</li>
+              <li>Atente-se para evitar demora no retorno, para trazer agilidade ao processo</li>
             </ul>
           </div>
           <div class="callout">O cliente precisa sentir que está conversando com uma pessoa — não apenas recebendo mensagens padronizadas.</div>
@@ -217,6 +241,17 @@ export const MODULES = [
           <div class="example">
             <div class="ex-line ex-bad">❌ "manda seu cpf ai"</div>
             <div class="ex-line ex-good">✔️ "Pode me informar seu CPF, por gentileza? Assim, consigo consultar as condições disponíveis para você."</div>
+          </div>
+          <div class="card">
+            <h3>Verbal</h3>
+            <ul class="plain">
+              <li>Utilize sua voz como ferramenta estratégica no atendimento</li>
+              <li>Fale de forma simples e objetiva</li>
+              <li>Evite termos técnicos desnecessários</li>
+              <li>Utilize um tom de voz acolhedor e profissional</li>
+              <li>Pronuncie corretamente palavras e nomes</li>
+              <li>Evite vícios de linguagem, como né?, tá?, tipo, entre outros</li>
+            </ul>
           </div>
         `,
       },

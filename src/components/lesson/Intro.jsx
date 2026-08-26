@@ -14,10 +14,10 @@ export default function Intro({ onStart }) {
         <div className="eyebrow"><span className="dash" />ACADEMIA HOTLINE</div>
         <h2 className="lesson-title" style={{ marginBottom: 6 }}>Trilha do Especialista em Crédito</h2>
         <p className="lede">
-          Antes de bater metas, vamos conhecer a Hotline por dentro: nossa história, propósito,
-          produtos e o que esperamos de você no dia a dia do atendimento. No final, tem uma
-          masmorra te esperando 🗡️
+          Antes de atingir metas, vamos conhecer a cultura Hotline! Nossa história, propósito,
+          produtos e o que esperamos de você no dia a dia do atendimento.
         </p>
+        <p className="lede">No final, tem uma masmorra te esperando 🗡️</p>
         <button className="start-btn" onClick={onStart}>Iniciar trilha →</button>
       </motion.div>
     </div>
