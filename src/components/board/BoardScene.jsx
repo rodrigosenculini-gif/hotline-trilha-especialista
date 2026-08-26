@@ -8,7 +8,7 @@ import { trackResposta } from '../../lib/track';
 const themeById = Object.fromEntries(THEMES.map((t) => [t.id, t]));
 
 // phase: 'mountain-overview' -> 'question' -> 'feedback' -> 'blocks' -> (avança ponto) ... -> 'complete'
-export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, modoRevisao = false, stopIndexInicial = 0, apenasEssaEtapa = false, onRegistrarPasso }) {
+export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, modoRevisao = false, stopIndexInicial = 0, apenasEssaEtapa = false, onRegistrarPasso, onRespostaMontanha }) {
   const [stopIndex, setStopIndex] = useState(stopIndexInicial);
   const [phase, setPhase] = useState(modoRevisao ? 'question' : 'run-door');
   const [blockIndex, setBlockIndex] = useState(0);
@@ -54,6 +54,7 @@ export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, mod
       respostaCorreta: stop.question.options[stop.question.correct],
       acertou: correto,
     });
+    onRespostaMontanha?.(stop.id, correto, modoRevisao);
     setTimeout(() => setPhase('feedback'), 900);
   }
 

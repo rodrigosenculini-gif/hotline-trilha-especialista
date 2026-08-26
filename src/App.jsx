@@ -16,7 +16,7 @@ const PLAYBOOK_URL = 'https://hotline-playbook.vercel.app';
 
 export default function App() {
   // intro | lessons | board | trilha-escolha | trilha-revisao-lista | trilha-revisao-etapa
-  // | playbook | door-to-battle | battle | final
+  // | playbook | door-to-battle | battle | pos-derrota-escolha | final
   const [phase, setPhase] = useState('intro');
   const [lessonIndex, setLessonIndex] = useState(0);
   const [xp, setXp] = useState(0);
@@ -25,6 +25,16 @@ export default function App() {
   const [showBubble, setShowBubble] = useState(true);
   const [sessaoId] = useState(() => getSessaoId());
   const [revisaoStopIndex, setRevisaoStopIndex] = useState(0);
+  const [showMenu, setShowMenu] = useState(false);
+
+  // parada(s) da montanha que erraram ou foram revisadas -> viram pergunta extra na masmorra
+  const [stopsParaReforcar, setStopsParaReforcar] = useState([]); // [{ stopId, motivo }]
+
+  // playbook: precisa abrir ao menos 1 "Informações completas" pra liberar o botão
+  const [playbookDesbloqueado, setPlaybookDesbloqueado] = useState(false);
+
+  // usado só pra remontar o BattleGame do zero quando o usuário escolhe "refazer a masmorra"
+  const [battleKey, setBattleKey] = useState(0);
 
   // histórico de passos já percorridos, pra alimentar o menu "onde eu já passei"
   const [passos, setPassos] = useState([{ label: 'Início da trilha', fase: 'intro' }]);
@@ -35,6 +45,27 @@ export default function App() {
       return [...p, { label, ...extra }];
     });
   }
+
+  function handleRespostaMontanha(stopId, acertou, emRevisao) {
+    if (emRevisao || !acertou) {
+      setStopsParaReforcar((prev) => {
+        const motivo = emRevisao ? 'revisao' : 'erro-montanha';
+        if (prev.some((p) => p.stopId === stopId && p.motivo === motivo)) return prev;
+        return [...prev, { stopId, motivo }];
+      });
+    }
+  }
+
+  // escuta o playbook (iframe) avisando que o usuário abriu "Informações" de um produto
+  useEffect(() => {
+    function onMessage(e) {
+      if (e.data?.type === 'hotline-playbook-info-aberta') {
+        setPlaybookDesbloqueado(true);
+      }
+    }
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
 
   const lesson = FLAT_LESSONS[lessonIndex];
 
@@ -73,6 +104,7 @@ export default function App() {
   }
 
   function handleEscolherContinuar() {
+    setPlaybookDesbloqueado(false);
     registrarPasso('Playbook dos produtos', { fase: 'playbook' });
     setPhase('playbook');
   }
@@ -100,17 +132,27 @@ export default function App() {
     setPhase('final');
   }
 
+  // usuário perdeu a masmorra -> em vez de recarregar tudo, oferece escolha
+  function handleGameOver() {
+    setPhase('pos-derrota-escolha');
+  }
+
+  function handleRefazerMasmorra() {
+    setBattleKey((k) => k + 1);
+    setPhase('door-to-battle');
+    setTimeout(() => setPhase('battle'), 1200);
+  }
+
   function irParaPasso(p) {
     setShowMenu(false);
     if (p.fase === 'intro') { setPhase('intro'); return; }
     if (p.fase === 'lessons') { setLessonIndex(p.lessonIndex); setPhase('lessons'); return; }
-    // demais fases (board/playbook/battle/final) não têm retorno direto seguro —
-    // o menu serve principalmente pra ver o que já foi percorrido
+    if (p.fase === 'playbook') { setPhase('playbook'); return; }
+    // board/battle/final não têm retorno direto seguro — o menu serve
+    // principalmente pra ver o que já foi percorrido
   }
 
-  const [showMenu, setShowMenu] = useState(false);
-
-  const showHeader = phase === 'intro' || phase === 'lessons';
+  const showHeader = ['intro', 'lessons', 'board', 'trilha-escolha', 'trilha-revisao-lista', 'trilha-revisao-etapa', 'playbook', 'battle', 'pos-derrota-escolha'].includes(phase);
 
   return (
     <div className="app-shell">
@@ -138,7 +180,7 @@ export default function App() {
                   className="nav-btn"
                   style={{ textAlign: 'left', justifyContent: 'flex-start' }}
                   onClick={() => irParaPasso(p)}
-                  disabled={p.fase !== 'intro' && p.fase !== 'lessons'}
+                  disabled={!['intro', 'lessons', 'playbook'].includes(p.fase)}
                 >
                   {i + 1}. {p.label}
                 </button>
@@ -167,6 +209,7 @@ export default function App() {
           onXpGain={handleXpGain}
           sessaoId={sessaoId}
           onRegistrarPasso={(label) => registrarPasso(label, { fase: 'board' })}
+          onRespostaMontanha={handleRespostaMontanha}
         />
       )}
 
@@ -212,18 +255,36 @@ export default function App() {
           modoRevisao
           apenasEssaEtapa
           stopIndexInicial={revisaoStopIndex}
+          onRespostaMontanha={handleRespostaMontanha}
         />
       )}
 
       {phase === 'playbook' && (
         <div className="board-scene theme-galaxia" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px' }}>
-          <div className="stop-title-big" style={{ marginBottom: 12 }}>Antes da masmorra, dá uma olhada nos nossos produtos</div>
+          <div className="stop-title-big" style={{ marginBottom: 6 }}>Antes da masmorra, dá uma olhada nos nossos produtos</div>
+          {!playbookDesbloqueado && (
+            <motion.div
+              className="playbook-hint"
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.2, repeat: Infinity }}
+              style={{ color: 'var(--amber)', fontWeight: 700, marginBottom: 10, textAlign: 'center' }}
+            >
+              👇 Clique em um produto abaixo e depois em "Informações" pra liberar a masmorra
+            </motion.div>
+          )}
           <iframe
             src={PLAYBOOK_URL}
             title="Playbooks Hotline"
-            style={{ width: '100%', maxWidth: 1100, flex: 1, border: 'none', borderRadius: 16, background: '#111416' }}
+            style={{ width: '100%', maxWidth: 1100, flex: 1, border: playbookDesbloqueado ? '2px solid #79a98a' : '2px solid var(--amber)', borderRadius: 16, background: '#111416' }}
           />
-          <button className="block-next" style={{ marginTop: 16 }} onClick={handlePlaybookContinuar}>Já revisei, seguir para a masmorra →</button>
+          <button
+            className="block-next"
+            style={{ marginTop: 16, opacity: playbookDesbloqueado ? 1 : 0.45, cursor: playbookDesbloqueado ? 'pointer' : 'not-allowed' }}
+            onClick={handlePlaybookContinuar}
+            disabled={!playbookDesbloqueado}
+          >
+            {playbookDesbloqueado ? 'Já revisei, seguir para a masmorra →' : 'Veja pelo menos um produto pra liberar'}
+          </button>
         </div>
       )}
 
@@ -244,7 +305,32 @@ export default function App() {
         </div>
       )}
 
-      {phase === 'battle' && <BattleGame onVictory={handleVictory} sessaoId={sessaoId} />}
+      {phase === 'battle' && (
+        <BattleGame
+          key={battleKey}
+          onVictory={handleVictory}
+          onGameOver={handleGameOver}
+          sessaoId={sessaoId}
+          stopsParaReforcar={stopsParaReforcar}
+        />
+      )}
+
+      {phase === 'pos-derrota-escolha' && (
+        <div className="board-scene theme-partida">
+          <div className="finale-scene">
+            <motion.div className="finale-card" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+              <img src={MASCOT_IMG} alt="Esquentadinho" />
+              <h2 style={{ marginBottom: 12 }}>Não foi dessa vez...</h2>
+              <p>Quer rever alguma parte da trilha antes de tentar de novo, ou já quer refazer só a masmorra?</p>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 16, flexWrap: 'wrap' }}>
+                <button className="nav-btn" onClick={() => setPhase('trilha-revisao-lista')}>🔎 Rever a trilha</button>
+                <button className="nav-btn" onClick={() => setPlaybookDesbloqueado(false) || setPhase('playbook')}>📘 Rever o playbook</button>
+                <button className="block-next" onClick={handleRefazerMasmorra}>⚔️ Refazer só a masmorra</button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )}
 
       {phase === 'final' && <FinalScreen minScoreReached={bonusReached} />}
 

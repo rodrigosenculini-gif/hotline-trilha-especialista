@@ -5,12 +5,32 @@ import {
   ghostStageForIndex,
   HOT_HIT_LINES,
   MAX_LIVES,
+  shuffle,
 } from '../../data/quiz';
+import { BOARD_STOPS } from '../../data/board';
 import { MASCOT_IMG } from '../../data/config';
 import { trackResposta } from '../../lib/track';
 
-export default function BattleGame({ onVictory, sessaoId, vendedor }) {
-  const [questions] = useState(() => buildGameQuestions());
+// Monta perguntas extras a partir das paradas da montanha que o usuário
+// errou ou revisou — reforçando exatamente o que precisa de mais atenção.
+function montarPerguntasExtras(stopsParaReforcar) {
+  return stopsParaReforcar
+    .map(({ stopId, motivo }) => {
+      const stop = BOARD_STOPS.find((s) => s.id === stopId);
+      if (!stop) return null;
+      const order = shuffle(stop.question.options.map((_, i) => i));
+      return {
+        text: stop.question.text,
+        options: order.map((i) => stop.question.options[i]),
+        correct: order.indexOf(stop.question.correct),
+        especial: motivo, // 'erro-montanha' | 'revisao'
+      };
+    })
+    .filter(Boolean);
+}
+
+export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, stopsParaReforcar = [] }) {
+  const [questions] = useState(() => [...buildGameQuestions(), ...montarPerguntasExtras(stopsParaReforcar)]);
   const [qi, setQi] = useState(0);
   const [lives, setLives] = useState(MAX_LIVES);
   const [potions, setPotions] = useState(0);
@@ -27,10 +47,6 @@ export default function BattleGame({ onVictory, sessaoId, vendedor }) {
   const stageChanged = stage.name !== prevStage.name;
   const q = questions[qi];
 
-  function restart() {
-    window.location.reload();
-  }
-
   function pick(i) {
     if (selected !== null || modal) return;
     setSelected(i);
@@ -45,6 +61,7 @@ export default function BattleGame({ onVictory, sessaoId, vendedor }) {
       respostaDada: q.options[i],
       respostaCorreta: q.options[q.correct],
       acertou: isCorrect,
+      motivoEspecial: q.especial || null,
     });
 
     if (isCorrect) {
@@ -263,7 +280,7 @@ export default function BattleGame({ onVictory, sessaoId, vendedor }) {
             <div className="b-modal">
               <h3>💀 Você perdeu para a masmorra</h3>
               <p>Acertos: {correctCount} de {qi + 1} perguntas.</p>
-              <button className="b-restart" onClick={restart}>Tentar novamente</button>
+              <button className="b-restart" onClick={() => onGameOver?.()}>Tentar novamente</button>
             </div>
           </motion.div>
         )}

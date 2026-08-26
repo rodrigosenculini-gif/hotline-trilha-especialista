@@ -1,6 +1,6 @@
 // Envia cada resposta (montanha ou masmorra) pra ficar registrada no
 // Supabase, só pra análise interna — nunca bloqueia nem aparece pro usuário.
-export function trackResposta({ sessaoId, vendedor, origem, etapaId, pergunta, respostaDada, respostaCorreta, acertou }) {
+export function trackResposta({ sessaoId, vendedor, origem, etapaId, pergunta, respostaDada, respostaCorreta, acertou, motivoEspecial }) {
   try {
     fetch('/api/track', {
       method: 'POST',
@@ -14,6 +14,7 @@ export function trackResposta({ sessaoId, vendedor, origem, etapaId, pergunta, r
         resposta_dada: respostaDada,
         resposta_correta: respostaCorreta,
         acertou,
+        motivo_especial: motivoEspecial || null,
       }),
     }).catch(() => {});
   } catch {
