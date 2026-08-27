@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { BOARD_STOPS, MOUNTAIN_POINTS } from '../../data/board';
-import { MASCOT_IMG } from '../../data/config';
+import { MASCOT_IMG_MOCHILA } from '../../data/config';
 
 // Gera os picos da montanha (silhuetas triangulares) ficando mais
 // íngremes/altos conforme avança pra direita.
@@ -74,7 +74,7 @@ export default function MountainScene({ currentIndex, zoomedOut }) {
 
         <motion.img
           key={currentIndex}
-          src={MASCOT_IMG}
+          src={MASCOT_IMG_MOCHILA}
           alt="Esquentadinho"
           className="mountain-hero"
           style={{ left: `${origin.x}%`, top: `${origin.y}%` }}
