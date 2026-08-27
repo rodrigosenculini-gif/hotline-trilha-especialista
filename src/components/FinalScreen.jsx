@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MASCOT_IMG } from '../data/config';
 import { atualizarVendedorSessao } from '../lib/track';
+import { AUDIO_MASCOTE, tocarAudio } from '../lib/audio';
 
 const DASHBOARD_URL = 'https://dashboard-seven-pearl-93.vercel.app';
 const REGISTER_ENDPOINT = `${DASHBOARD_URL}/api/dashboard?type=vendedoras_register`;
@@ -12,6 +13,10 @@ export default function FinalScreen({ minScoreReached, sessaoId }) {
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
+
+  useEffect(() => {
+    tocarAudio(AUDIO_MASCOTE.ultimoPasso);
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();

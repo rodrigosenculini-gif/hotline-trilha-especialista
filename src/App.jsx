@@ -11,6 +11,7 @@ import { FLAT_LESSONS } from './data/lessons';
 import { BOARD_STOPS } from './data/board';
 import { LOGO_IMG, MASCOT_GREETING, MASCOT_IMG, MASCOT_TIPS } from './data/config';
 import { getSessaoId } from './lib/track';
+import { AUDIO_MASCOTE, AUDIO_MASCOTE_SLIDE, tocarAudio } from './lib/audio';
 
 const MIN_SCORE_FOR_BONUS = 14; // de 20 perguntas
 const PLAYBOOK_URL = 'https://hotline-playbook.vercel.app';
@@ -98,6 +99,7 @@ export default function App() {
     const l = FLAT_LESSONS[idx];
     setMascotMsg(MASCOT_TIPS[l.id] || 'Bora continuar!');
     setShowBubble(true);
+    tocarAudio(AUDIO_MASCOTE_SLIDE[idx + 1]);
     registrarPasso(`Lição · ${l.title}`, { fase: 'lessons', lessonIndex: idx });
   }
 
@@ -120,6 +122,7 @@ export default function App() {
 
   // fim da trilha principal (não revisão) -> pergunta se quer rever algo
   function handleBoardFinish() {
+    tocarAudio(AUDIO_MASCOTE.antesContinuar);
     setPhase('trilha-escolha');
   }
 
@@ -128,6 +131,7 @@ export default function App() {
   }
 
   function handleEscolherContinuar() {
+    tocarAudio(AUDIO_MASCOTE.playbook);
     registrarPasso('Playbook dos produtos', { fase: 'playbook' });
     setPhase('playbook');
   }

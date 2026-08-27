@@ -4,6 +4,7 @@ import { BOARD_STOPS, THEMES, XP_PER_BLOCK } from '../../data/board';
 import { MASCOT_IMG } from '../../data/config';
 import MountainScene from './MountainScene';
 import { trackResposta } from '../../lib/track';
+import { AUDIO_MASCOTE, tocarAudio } from '../../lib/audio';
 
 const themeById = Object.fromEntries(THEMES.map((t) => [t.id, t]));
 
@@ -34,8 +35,15 @@ export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, mod
 
   useEffect(() => {
     if (phase === 'mountain-overview') {
+      tocarAudio(AUDIO_MASCOTE.montanhaInicio);
       const t = setTimeout(() => setPhase('question'), 2200);
       return () => clearTimeout(t);
+    }
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase === 'complete') {
+      tocarAudio(AUDIO_MASCOTE.montanhaFinal);
     }
   }, [phase]);
 

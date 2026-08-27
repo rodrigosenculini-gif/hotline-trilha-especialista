@@ -10,6 +10,15 @@ import {
 import { BOARD_STOPS } from '../../data/board';
 import { MASCOT_IMG } from '../../data/config';
 import { trackResposta } from '../../lib/track';
+import { tocarAudio } from '../../lib/audio';
+
+// Cada frase do Esquentadinho ao perder vida tem seu próprio áudio — a que
+// não está aqui ("da próxima, mais atenção!") toca só o texto, sem áudio.
+const AUDIO_POR_FRASE = {
+  'ah não, cuidado!': '/audio/mascote-masmorra-errou.mp3',
+  'ei, estou perdendo minhas vidas aqui!': '/audio/mascote-masmorra-perdendo-vidas.mp3',
+  'vamos, você consegue!': '/audio/mascote-masmorra-incentivo.mp3',
+};
 
 // Monta perguntas extras a partir das paradas da montanha que o usuário
 // errou ou revisou — reforçando exatamente o que precisa de mais atenção.
@@ -69,7 +78,9 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
       setCorrectCount((c) => c + 1);
     } else {
       setFx('attack-hot');
-      setHotLine(HOT_HIT_LINES[Math.floor(Math.random() * HOT_HIT_LINES.length)]);
+      const linha = HOT_HIT_LINES[Math.floor(Math.random() * HOT_HIT_LINES.length)];
+      setHotLine(linha);
+      tocarAudio(AUDIO_POR_FRASE[linha]);
       setLives((l) => l - 1);
     }
 

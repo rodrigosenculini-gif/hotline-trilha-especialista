@@ -1,13 +1,24 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AUDIO_SLIDE_NARRACAO, tocarAudio } from '../../lib/audio';
 
 export default function LessonView({ lesson, index, total, onPrev, onNext }) {
   const stageRef = useRef(null);
+  const [tocando, setTocando] = useState(false);
+  const numeroSlide = index + 1;
+  const audioUrl = AUDIO_SLIDE_NARRACAO[numeroSlide];
 
   useEffect(() => {
     stageRef.current?.scrollTo({ top: 0, behavior: 'auto' });
     window.scrollTo({ top: 0, behavior: 'auto' });
+    setTocando(false);
   }, [lesson.id]);
+
+  function handleOuvir() {
+    if (!audioUrl) return;
+    tocarAudio(audioUrl);
+    setTocando(true);
+  }
 
   return (
     <>
@@ -20,7 +31,14 @@ export default function LessonView({ lesson, index, total, onPrev, onNext }) {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.32 }}
           >
-            <div className="eyebrow"><span className="dash" />{lesson.moduleLabel}</div>
+            <div className="eyebrow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span><span className="dash" />{lesson.moduleLabel}</span>
+              {audioUrl && (
+                <button type="button" className="nav-btn" onClick={handleOuvir} style={{ fontSize: 12 }}>
+                  {tocando ? '🔊 Tocando...' : '🔊 Ouvir este slide'}
+                </button>
+              )}
+            </div>
             <h2 className="lesson-title">{lesson.title}</h2>
             <div className="content" dangerouslySetInnerHTML={{ __html: lesson.content }} />
           </motion.div>
