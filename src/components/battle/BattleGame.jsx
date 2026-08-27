@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   buildGameQuestions,
@@ -52,12 +52,36 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
   const [fx, setFx] = useState(null); // 'attack-ghost' | 'attack-hot'
   const [hotLine, setHotLine] = useState(null);
   const [modal, setModal] = useState(null);
+  const [tempoEsgotando, setTempoEsgotando] = useState(false); // true no 2º minuto (aviso visível)
+  const [segundosRestantes, setSegundosRestantes] = useState(60);
 
   const q = questions[qi];
   const qPrev = qi > 0 ? questions[qi - 1] : q;
   const stage = q?.especial ? BONUS_STAGE : ghostStageForIndex(qi, QUESTIONS.length);
   const prevStage = qi > 0 ? (qPrev?.especial ? BONUS_STAGE : ghostStageForIndex(qi - 1, QUESTIONS.length)) : stage;
   const stageChanged = stage.name !== prevStage.name;
+
+  // Tempo pra responder: 1º minuto sem cobrança visual; se não respondeu,
+  // começa a contar mais 1 minuto visível. Sem resposta até o fim, perde a
+  // pergunta (mostra a certa) e perde uma vida.
+  useEffect(() => {
+    setTempoEsgotando(false);
+    setSegundosRestantes(60);
+    if (selected !== null || modal) return undefined;
+
+    const avisoTimer = setTimeout(() => setTempoEsgotando(true), 60000);
+    const tickTimer = setInterval(() => {
+      setSegundosRestantes((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    const falhaTimer = setTimeout(() => pick(-1), 120000);
+
+    return () => {
+      clearTimeout(avisoTimer);
+      clearTimeout(falhaTimer);
+      clearInterval(tickTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qi]);
 
   function pick(i) {
     if (selected !== null || modal) return;
@@ -70,7 +94,7 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
       origem: 'masmorra',
       etapaId: `pergunta-${qi + 1}`,
       pergunta: q.text,
-      respostaDada: q.options[i],
+      respostaDada: i === -1 ? '(sem resposta — tempo esgotado)' : q.options[i],
       respostaCorreta: q.options[q.correct],
       acertou: isCorrect,
       motivoEspecial: q.especial || null,
@@ -138,9 +162,7 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
   ), [stage]);
 
   return (
-    <div className="battle-scene" style={cenarioStyle}>
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', ...darkOverlay, transition: 'background 0.6s' }} />
-
+    <div className="battle-scene">
       <div className="battle-hud">
         <div className="hearts">
           {Array.from({ length: MAX_LIVES }).map((_, i) => (
@@ -166,7 +188,8 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
         )}
       </AnimatePresence>
 
-      <div className="battle-arena">
+      <div className="battle-arena" style={cenarioStyle}>
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', ...darkOverlay, transition: 'background 0.6s', borderRadius: 16 }} />
         <div className="fighter-lane">
           <motion.img
             src={MASCOT_IMG_ARMADURA}
@@ -267,6 +290,11 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
       </AnimatePresence>
 
       <div className="battle-question">
+        {tempoEsgotando && selected === null && (
+          <div className="battle-timer-aviso">
+            ⏳ Responda logo! {segundosRestantes}s
+          </div>
+        )}
         <h3>{q.text}</h3>
         {q.options.map((opt, i) => {
           if (hiddenOpts.includes(i)) return null;

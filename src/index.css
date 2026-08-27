@@ -165,7 +165,7 @@ details.acc summary::-webkit-details-marker{display:none;}
 .battle-hud{display:flex; align-items:center; justify-content:space-between; width:100%; max-width:760px; font-family:'IBM Plex Mono'; color:var(--paper);}
 .hearts{display:flex; gap:4px; font-size:22px;}
 .heart-lost{opacity:.25; filter:grayscale(1);}
-.battle-arena{flex:1; width:100%; max-width:760px; display:flex; align-items:center; justify-content:space-between; position:relative; padding:20px 30px;}
+.battle-arena{flex:1; width:100%; max-width:760px; display:flex; align-items:center; justify-content:space-between; position:relative; padding:20px 30px; border-radius:16px; overflow:hidden; background-size:cover; background-position:center;}
 .fighter{font-size:70px; filter:drop-shadow(0 10px 14px rgba(0,0,0,.5));}
 .ghost{font-size:80px; filter:drop-shadow(0 10px 14px rgba(0,0,0,.5));}
 .ghost-name{position:absolute; top:0; right:10px; z-index:2; font-family:'IBM Plex Mono'; font-size:12px; color:var(--paper); background:rgba(0,0,0,.4); padding:4px 10px; border-radius:99px;}
@@ -259,11 +259,11 @@ details.acc summary::-webkit-details-marker{display:none;}
   font-size:13px; padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,.2);
 }
 .fighter-lane{position:relative; display:flex; align-items:center; height:100px;}
-.fighter-img{width:80px; filter:drop-shadow(0 10px 14px rgba(0,0,0,.5)); position:relative; z-index:2;}
+.fighter-img{width:130px; filter:drop-shadow(0 10px 14px rgba(0,0,0,.5)); position:relative; z-index:2;}
 .sword-swing{position:absolute; top:20px; font-size:32px; z-index:3;}
 .ghost-lane{position:relative; display:flex; flex-direction:column; align-items:center; padding-top:22px;}
 .ghost-emoji{font-size:80px; filter:drop-shadow(0 10px 14px rgba(0,0,0,.5)); position:relative; z-index:1;}
-.ghost-img{width:96px; height:96px; object-fit:contain; image-rendering:pixelated;}
+.ghost-img{width:150px; height:150px; object-fit:contain; image-rendering:pixelated; position:relative; z-index:2;}
 
 /* ---------- FINAL SCREEN ---------- */
 .finale-scene{position:fixed; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:24px;}

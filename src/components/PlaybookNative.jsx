@@ -235,6 +235,7 @@ export default function PlaybookNative({ onContinuar }) {
   const todosVistos = vistos.length >= PRODUTOS.length;
   const proximoNaoVisto = PRODUTOS.find((p) => !vistos.includes(p.id));
   const produtoAberto = PRODUTOS.find((x) => x.id === abertoId);
+  const produtoFluxo = PRODUTOS.find((x) => x.fluxogramaInterativo);
 
   function abrir(p) {
     setAbertoId(p.id);
@@ -279,8 +280,17 @@ export default function PlaybookNative({ onContinuar }) {
       </div>
 
       <button
+        type="button"
+        className="nav-btn"
+        style={{ marginTop: 14, width: 260, maxWidth: '90%' }}
+        onClick={() => { setFluxoNodeAberto(null); setFluxoAberto(true); }}
+      >
+        🗺️ Ver fluxograma navegável
+      </button>
+
+      <button
         className="block-next"
-        style={{ marginTop: 22, opacity: todosVistos ? 1 : 0.45, cursor: todosVistos ? 'pointer' : 'not-allowed' }}
+        style={{ marginTop: 14, opacity: todosVistos ? 1 : 0.45, cursor: todosVistos ? 'pointer' : 'not-allowed' }}
         onClick={onContinuar}
         disabled={!todosVistos}
       >
@@ -377,22 +387,13 @@ export default function PlaybookNative({ onContinuar }) {
               </Secao>
 
               <button className="block-next" style={{ marginTop: 18 }} onClick={() => setAbertoId(null)}>Entendi →</button>
-              {produtoAberto.fluxogramaInterativo && (
-                <button
-                  className="nav-btn"
-                  style={{ marginTop: 10, width: '100%' }}
-                  onClick={() => { setFluxoNodeAberto(null); setFluxoAberto(true); }}
-                >
-                  🗺️ Ver fluxograma navegável
-                </button>
-              )}
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {fluxoAberto && produtoAberto && (
+        {fluxoAberto && produtoFluxo && (
           <div className="block-overlay" onClick={() => setFluxoAberto(false)} style={{ alignItems: 'flex-start', paddingTop: 40 }}>
             <motion.div
               className="block-card"
@@ -402,7 +403,7 @@ export default function PlaybookNative({ onContinuar }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
             >
-              <h2>{produtoAberto.icone} Fluxograma — {produtoAberto.nome}</h2>
+              <h2>{produtoFluxo.icone} Fluxograma — {produtoFluxo.nome}</h2>
               <p style={{ fontSize: 13, color: '#b8b0a0' }}>Clique em cada etapa pra ver o que fazer</p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 20, gap: 4 }}>
@@ -411,7 +412,7 @@ export default function PlaybookNative({ onContinuar }) {
                 <div className="fluxo-node fluxo-node-start">Qual o cenário?</div>
                 <div className="fluxo-linha" />
                 <div className="fluxo-grid">
-                  {produtoAberto.cenarios.map((c, i) => {
+                  {produtoFluxo.cenarios.map((c, i) => {
                     const aberto = fluxoNodeAberto === i;
                     return (
                       <div key={i} className="fluxo-branch">

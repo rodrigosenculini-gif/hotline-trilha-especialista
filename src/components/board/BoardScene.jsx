@@ -132,6 +132,14 @@ export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, mod
         <MountainScene currentIndex={stopIndex} zoomedOut={zoomedOut} />
       )}
 
+      {(phase === 'question' || phase === 'feedback' || phase === 'blocks') && (
+        <img
+          src={MASCOT_IMG_MOCHILA}
+          alt="Esquentadinho"
+          className="mascot-corner-avatar"
+        />
+      )}
+
       <AnimatePresence mode="wait">
         {phase === 'mountain-overview' && (
           <motion.div
