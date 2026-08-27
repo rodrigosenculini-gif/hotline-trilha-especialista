@@ -8,7 +8,7 @@ import {
   shuffle,
 } from '../../data/quiz';
 import { BOARD_STOPS } from '../../data/board';
-import { MASCOT_IMG } from '../../data/config';
+import { MASCOT_IMG_ARMADURA } from '../../data/config';
 import { trackResposta } from '../../lib/track';
 import { tocarAudio } from '../../lib/audio';
 
@@ -127,9 +127,14 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
   }
 
   const darkOverlay = useMemo(() => ({ background: `rgba(0,0,0,${stage.darkness})` }), [stage]);
+  const cenarioStyle = useMemo(() => (
+    stage.bg
+      ? { backgroundImage: `url(${stage.bg})`, backgroundSize: 'cover', backgroundPosition: 'center', transition: 'background-image 0.6s' }
+      : {}
+  ), [stage]);
 
   return (
-    <div className="battle-scene">
+    <div className="battle-scene" style={cenarioStyle}>
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', ...darkOverlay, transition: 'background 0.6s' }} />
 
       <div className="battle-hud">
@@ -160,7 +165,7 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
       <div className="battle-arena">
         <div className="fighter-lane">
           <motion.img
-            src={MASCOT_IMG}
+            src={MASCOT_IMG_ARMADURA}
             alt="Esquentadinho"
             className="fighter-img"
             animate={
@@ -230,7 +235,7 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
             }
             transition={{ duration: fx === 'attack-ghost' ? 0.9 : 1.6, repeat: fx === 'attack-ghost' ? 0 : Infinity }}
           >
-            {stage.emoji}
+            {stage.img ? <img src={stage.img} alt={stage.name} className="ghost-img" /> : stage.emoji}
           </motion.span>
         </div>
       </div>

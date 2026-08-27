@@ -9,7 +9,7 @@ import Mascot from './components/mascot/Mascot';
 import PlaybookNative from './components/PlaybookNative';
 import { FLAT_LESSONS } from './data/lessons';
 import { BOARD_STOPS } from './data/board';
-import { LOGO_IMG, MASCOT_GREETING, MASCOT_IMG, MASCOT_TIPS } from './data/config';
+import { LOGO_IMG, MASCOT_GREETING, MASCOT_IMG, MASCOT_IMG_MOCHILA, MASCOT_IMG_ARMADURA, MASCOT_TIPS } from './data/config';
 import { getSessaoId } from './lib/track';
 import { AUDIO_MASCOTE, AUDIO_MASCOTE_SLIDE, tocarAudio } from './lib/audio';
 
@@ -256,7 +256,7 @@ export default function App() {
         <div className="board-scene theme-galaxia">
           <div className="finale-scene">
             <motion.div className="finale-card" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-              <img src={MASCOT_IMG} alt="Esquentadinho" />
+              <img src={MASCOT_IMG_MOCHILA} alt="Esquentadinho" />
               <h2 style={{ marginBottom: 12 }}>Antes de continuar...</h2>
               <p>Quer rever algum tópico da trilha, ou já pode seguir em frente?</p>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 16, flexWrap: 'wrap' }}>
@@ -305,7 +305,7 @@ export default function App() {
           <div className="scenery scenery-partida">
             <div className="door door-open">🚪</div>
             <motion.img
-              src={MASCOT_IMG}
+              src={MASCOT_IMG_ARMADURA}
               alt="Esquentadinho"
               className="run-through"
               initial={{ left: '20%', opacity: 1 }}
@@ -331,7 +331,7 @@ export default function App() {
         <div className="board-scene theme-partida">
           <div className="finale-scene">
             <motion.div className="finale-card" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-              <img src={MASCOT_IMG} alt="Esquentadinho" />
+              <img src={MASCOT_IMG_ARMADURA} alt="Esquentadinho" />
               <h2 style={{ marginBottom: 12 }}>Não foi dessa vez...</h2>
               <p>Quer rever alguma parte da trilha antes de tentar de novo, ou já quer refazer só a masmorra?</p>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 16, flexWrap: 'wrap' }}>

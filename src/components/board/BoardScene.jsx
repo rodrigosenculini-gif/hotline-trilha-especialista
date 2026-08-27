@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BOARD_STOPS, THEMES, XP_PER_BLOCK } from '../../data/board';
-import { MASCOT_IMG } from '../../data/config';
+import { MASCOT_IMG_MOCHILA } from '../../data/config';
 import MountainScene from './MountainScene';
 import { trackResposta } from '../../lib/track';
 import { AUDIO_MASCOTE, tocarAudio } from '../../lib/audio';
@@ -104,7 +104,7 @@ export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, mod
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            <img src={MASCOT_IMG} alt="Esquentadinho" />
+            <img src={MASCOT_IMG_MOCHILA} alt="Esquentadinho" />
             <h2 style={{ marginBottom: 12 }}>{modoRevisao ? 'Revisão concluída!' : 'Trilha concluída!'}</h2>
             <p>{modoRevisao ? 'Agora sim, bora continuar de onde parou!' : 'Agora você está pronto para os Jogos Do Especialista! Se prepare!'}</p>
             <button className="block-next" onClick={onFinish}>{modoRevisao ? 'Continuar →' : 'Entrar na masmorra →'}</button>
@@ -120,7 +120,7 @@ export default function BoardScene({ onFinish, onXpGain, sessaoId, vendedor, mod
         <div className="scenery scenery-partida">
           <div className="door">🚪</div>
           <motion.img
-            src={MASCOT_IMG}
+            src={MASCOT_IMG_MOCHILA}
             alt="Esquentadinho"
             className="run-through"
             initial={{ left: '-10%', opacity: 0 }}

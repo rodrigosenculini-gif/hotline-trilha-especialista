@@ -1,5 +1,7 @@
 export const MASCOT_NAME = 'Esquentadinho';
 export const MASCOT_IMG = 'https://hotlinesolucoes.com.br/wp-content/uploads/2024/08/macote.png';
+export const MASCOT_IMG_MOCHILA = '/images/mascote-mochila.png';
+export const MASCOT_IMG_ARMADURA = '/images/mascote-armadura.png';
 export const LOGO_IMG = 'https://hotlinesolucoes.com.br/wp-content/uploads/2024/08/LOGO_HOTLINE_SOLO_laranja-1.svg';
 
 export const MASCOT_GREETING = `Fala! Eu sou o ${MASCOT_NAME} 🔥 Vou te acompanhar em toda a trilha. Bora começar?`;
