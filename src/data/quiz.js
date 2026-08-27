@@ -41,10 +41,10 @@ export const QUESTIONS = [
 // trocam juntos a cada 4 perguntas, ficando progressivamente mais obscuro.
 export const GHOST_STAGES = [
   { name: 'Fantasma da Enrolação', emoji: '👻', color: '#8fd3ff', slimeEmoji: '💧', slimeColor: '#5fb8e8', darkness: 0, img: '/images/monstro-1.png', bg: '/images/cenario-1.png' },
-  { name: 'Sombra do Silêncio', emoji: '🫥', color: '#b48fff', slimeEmoji: '🟣', slimeColor: '#8a5fe8', darkness: 0.2, img: '/images/monstro-2.png', bg: null },
-  { name: 'Assombração Apressada', emoji: '💨', color: '#ff9a5a', slimeEmoji: '🔥', slimeColor: '#e86f2b', darkness: 0.38, img: null, bg: '/images/cenario-3.png' },
-  { name: 'Espectro Grosseiro', emoji: '😠', color: '#ff5a7a', slimeEmoji: '🟥', slimeColor: '#e82b52', darkness: 0.55, img: '/images/monstro-4.png', bg: null },
-  { name: 'Fantasma Desatento', emoji: '🌀', color: '#8fffb0', slimeEmoji: '🟢', slimeColor: '#2be874', darkness: 0.7, img: '/images/monstro-extra.png', bg: '/images/cenario-extra.png' },
+  { name: 'Sombra do Silêncio', emoji: '🫥', color: '#b48fff', slimeEmoji: '🟣', slimeColor: '#8a5fe8', darkness: 0.2, img: '/images/monstro-2.png', bg: '/images/cenario-2.png' },
+  { name: 'Assombração Apressada', emoji: '💨', color: '#ff9a5a', slimeEmoji: '🔥', slimeColor: '#e86f2b', darkness: 0.38, img: '/images/monstro-3.png', bg: '/images/cenario-3.png' },
+  { name: 'Espectro Grosseiro', emoji: '😠', color: '#ff5a7a', slimeEmoji: '🟥', slimeColor: '#e82b52', darkness: 0.55, img: '/images/monstro-4.png', bg: '/images/cenario-4.png' },
+  { name: 'Fantasma Desatento', emoji: '🌀', color: '#8fffb0', slimeEmoji: '🟢', slimeColor: '#2be874', darkness: 0.7, img: '/images/monstro-extra.png', bg: '/images/cenario-5.png' },
 ];
 
 export const HOT_HIT_LINES = [
