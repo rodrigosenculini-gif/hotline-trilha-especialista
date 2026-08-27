@@ -77,7 +77,8 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
       setFx('attack-ghost');
       setCorrectCount((c) => c + 1);
     } else {
-      setFx('attack-hot');
+      const morreAgora = lives - 1 <= 0;
+      setFx(morreAgora ? 'hot-ko' : 'attack-hot');
       const linha = HOT_HIT_LINES[Math.floor(Math.random() * HOT_HIT_LINES.length)];
       setHotLine(linha);
       tocarAudio(AUDIO_POR_FRASE[linha]);
@@ -96,7 +97,7 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
         return;
       }
       goNext();
-    }, isCorrect ? 1000 : 1300);
+    }, isCorrect ? 1000 : lives - 1 <= 0 ? 1500 : 1300);
   }
 
   function goNext() {
@@ -170,17 +171,21 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
             className="fighter-img"
             animate={
               fx === 'attack-ghost'
-                ? { x: [0, 130, 130, 0] }
+                ? { x: [0, 130, 130, 0], y: 0, rotate: 0, opacity: 1 }
                 : fx === 'attack-hot'
-                ? { x: [0, -10, 10, -8, 8, 0] }
-                : { y: [0, -5, 0] }
+                ? { x: [0, -10, 10, -8, 8, 0], y: 0, rotate: 0, opacity: [1, 0.25, 1, 0.25, 1, 0.25, 1] }
+                : fx === 'hot-ko'
+                ? { rotate: 90, y: 40, opacity: 1 }
+                : { y: [0, -6, 0], rotate: 0, opacity: 1 }
             }
             transition={
               fx === 'attack-ghost'
                 ? { duration: 0.9, times: [0, 0.35, 0.65, 1] }
                 : fx === 'attack-hot'
-                ? { duration: 0.45 }
-                : { duration: 1.4, repeat: Infinity }
+                ? { duration: 0.5 }
+                : fx === 'hot-ko'
+                ? { duration: 0.5, ease: 'easeIn' }
+                : { duration: 1, repeat: Infinity, ease: 'easeInOut' }
             }
           />
           <AnimatePresence>
@@ -225,18 +230,23 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
 
         <div className="ghost-lane">
           <span className="ghost-name">{stage.name}</span>
-          <motion.span
-            className="ghost-emoji"
-            style={{ color: stage.color }}
-            animate={
-              fx === 'attack-ghost'
-                ? { opacity: [1, 0.3, 1, 0.3, 1], scale: [1, 0.85, 1.1, 0.85, 1] }
-                : { y: [0, -8, 0] }
-            }
-            transition={{ duration: fx === 'attack-ghost' ? 0.9 : 1.6, repeat: fx === 'attack-ghost' ? 0 : Infinity }}
-          >
-            {stage.img ? <img src={stage.img} alt={stage.name} className="ghost-img" /> : stage.emoji}
-          </motion.span>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={stage.name}
+              className="ghost-emoji"
+              style={{ color: stage.color }}
+              initial={{ opacity: 0, y: 50, rotate: 0 }}
+              animate={
+                fx === 'attack-ghost'
+                  ? { opacity: [1, 0.25, 1, 0.25, 1, 0.25, 1], scale: [1, 0.85, 1.1, 0.85, 1], y: 0, rotate: 0 }
+                  : { y: [0, -7, 0], opacity: 1, rotate: 0 }
+              }
+              exit={{ opacity: 0, y: 50, rotate: 80, transition: { duration: 0.5, ease: 'easeIn' } }}
+              transition={{ duration: fx === 'attack-ghost' ? 0.9 : 1, repeat: fx === 'attack-ghost' ? 0 : Infinity, ease: 'easeInOut' }}
+            >
+              {stage.img ? <img src={stage.img} alt={stage.name} className="ghost-img" /> : stage.emoji}
+            </motion.span>
+          </AnimatePresence>
         </div>
       </div>
 
