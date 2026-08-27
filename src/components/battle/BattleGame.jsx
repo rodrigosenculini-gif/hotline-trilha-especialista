@@ -69,10 +69,15 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
     setSegundosRestantes(60);
     if (selected !== null || modal) return undefined;
 
-    const avisoTimer = setTimeout(() => setTempoEsgotando(true), 60000);
+    // 1º minuto: sem cobrança visual. Só depois disso começa o segundo
+    // minuto (visível, contando 1:00 -> 0:00).
+    const avisoTimer = setTimeout(() => {
+      setTempoEsgotando(true);
+      setSegundosRestantes(60);
+    }, 60000);
     const tickTimer = setInterval(() => {
       setSegundosRestantes((s) => (s > 0 ? s - 1 : 0));
-    }, 1000);
+    }, 61000); // só começa a contar de fato 1s depois do aviso aparecer
     const falhaTimer = setTimeout(() => pick(-1), 120000);
 
     return () => {
@@ -292,7 +297,7 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
       <div className="battle-question">
         {tempoEsgotando && selected === null && (
           <div className="battle-timer-aviso">
-            ⏳ Responda logo! {segundosRestantes}s
+            ⏳ Responda logo! {String(Math.floor(segundosRestantes / 60)).padStart(1, '0')}:{String(segundosRestantes % 60).padStart(2, '0')}
           </div>
         )}
         <h3>{q.text}</h3>

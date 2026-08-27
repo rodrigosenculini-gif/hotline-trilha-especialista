@@ -269,6 +269,11 @@ details.acc summary::-webkit-details-marker{display:none;}
 .finale-scene{position:fixed; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:24px;}
 .finale-card{max-width:640px; background:rgba(10,8,14,.7); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.15); border-radius:22px; padding:44px; text-align:center;}
 .finale-card img{height:70px; margin-bottom:18px;}
+.mascot-corner-avatar{
+  position:absolute; bottom:24px; left:24px; width:96px; height:auto; z-index:5;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));
+}
+@media (max-width:640px){ .mascot-corner-avatar{ width:64px; bottom:12px; left:12px; } }
 .finale-card p{font-size:16px; margin-bottom:24px;}
 .finale-link{display:inline-block; background:var(--paper); color:var(--bg); font-weight:700; padding:15px 30px; border-radius:12px; text-decoration:none;}
 .finale-input{
