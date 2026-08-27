@@ -10,34 +10,35 @@ const PRODUTOS = [
     id: 'clt',
     nome: 'Crédito CLT',
     icone: '💼',
-    resumo: 'Empréstimo consignado para carteira assinada',
+    resumo: 'Empréstimo consignado para carteira assinada, 100% digital',
+    fluxogramaInterativo: true,
     hero: [
-      { label: 'Produto', value: 'Crédito CLT (novo ou refin/troco)' },
-      { label: 'Cliente', value: 'Carteira assinada, margem disponível' },
-      { label: 'Diferencial', value: 'Desconto direto em folha' },
+      { label: 'Produto', value: 'Crédito CLT (novo, refin ou e-consignado)' },
+      { label: 'Cliente', value: 'Carteira assinada (CLT)' },
+      { label: 'Diferencial', value: 'Contratação 100% digital e desconto direto em folha' },
       { label: 'Objetivo', value: 'Fechar e encaminhar ao WhatsApp' },
     ],
     essencial: [
-      { title: 'Pode ser novo ou refinanciamento', body: 'Se o cliente já tem crédito ativo, é refinanciamento (troco). Se não tem nada, é crédito novo — o discurso muda.' },
       { title: 'Desconto em folha', body: 'As parcelas saem direto do salário. Só entre em detalhes de burocracia se o cliente perguntar.' },
-      { title: 'Depende da margem', body: 'A aprovação e o valor dependem da margem consignável disponível do trabalhador.' },
+      { title: 'Depende da margem', body: 'A aprovação e o valor dependem da margem consignável disponível — até 35% do salário.' },
+      { title: 'Contratação 100% digital', body: 'Tudo é feito com a gente pelo WhatsApp, sem precisar falar diretamente com o banco ou com a CTPS Digital.' },
+      { title: 'Juros de até 4,98% ao mês', body: 'Taxa competitiva — vale reforçar isso quando o cliente comparar com outras opções.' },
       { title: 'Comece pelo benefício', body: 'Fale primeiro do valor/condição — nunca abra a conversa falando de burocracia ou prazo.' },
     ],
     highlight: '"Consegui uma condição para você e vou te mostrar como aproveitar."',
-    flow: ['1. Identifique · Origem do lead', '2. Pergunte · Já tem crédito ativo?', '3. Apresente · Valor disponível', '4. Negocie · Se houver objeção', '5. Feche · Leve ao WhatsApp'],
+    flow: ['1. Identifique · Origem do lead', '2. Pergunte · Já tem crédito ativo?', '3. Apresente · Valor disponível', '4. Negocie · Se houver objeção', '5. Finalize · Feche e leve ao WhatsApp'],
     cenarios: [
-      { title: 'Dúvida sobre o produto', body: 'Explique o produto e, se já tem crédito ativo, que se trata de refinanciamento (troco); se não tem, que é um crédito novo.' },
-      { title: 'Interesse — valor bom', body: 'Apresente a condição original (maior troco/valor). Aceitou → fechar e levar pro WhatsApp. Não aceitou → negociação.' },
-      { title: 'Interesse — valor baixo', body: 'Negocie prazo para tentar aumentar o valor. Avalie cross-sell com outro produto se fizer sentido.' },
-      { title: 'Interesse — reprovado', body: 'Não prometa nada. Explique que não foi dessa vez e agende um follow-up para quando surgirem novos limites.' },
+      { title: 'Dúvida sobre o produto', body: 'Explique sobre o produto: um crédito novo disponível com desconto direto em folha de pagamento. Utilizando até 35% do salário do cliente, com taxas baixas e várias opções de bancos para aprovação. A aprovação depende do motor de crédito do banco parceiro.' },
+      { title: 'Sem interesse — valor bom', body: 'Pergunte por que não tem interesse. Apresente as vantagens do crédito, dê mais informações sobre o produto, tente outro valor (pergunte quanto ele deseja), tente outro banco, ou oferte outro produto.' },
+      { title: 'Sem interesse — valor baixo', body: 'Negocie prazo para tentar aumentar o valor. Tente em outro banco. Avalie cross-sell com outro produto se fizer sentido.' },
+      { title: 'Interesse — reprovado', body: 'Não prometa nada. Explique que não foi dessa vez, agende um follow-up para quando surgirem novos limites, e ofertar outro produto.' },
       { title: 'Não respondeu', body: 'Ligue primeiro. Sem atender, aguarde 24h e mande WhatsApp com foto chamativa + áudio explicando o retorno.' },
-      { title: 'Cliente estressado', body: 'Acalme e descubra o motivo real: dúvida (esclareça), valor (renegocie) ou "não quero mais" (respeite e não insista).' },
+      { title: 'Cliente estressado', body: 'Acalme e descubra o motivo real: dúvida (esclareça), valor (renegocie) ou "não quero mais" (entenda o porquê — depois de insistir, dê um tempo ao cliente; se ainda não quiser, não insista mais e deixe o canal aberto pra futuramente).' },
     ],
     negociacao: [
-      { step: 'Apresente a condição original', detail: 'Maior troco/valor — é sempre a prioridade.' },
-      { step: 'Ajuste prazo/parcela', detail: 'Se o cliente reclamar, ofereça um novo prazo (o valor liberado muda).' },
-      { step: 'Outra adequação', detail: 'Se disponível, avalie um produto ou condição alternativa.' },
-      { step: 'Feche', detail: 'Cliente aceitou → leve para o WhatsApp e formalize.' },
+      { step: 'Apresente sem garantia primeiro', detail: 'Mostre a taxa padrão antes de complicar com garantias.' },
+      { step: 'Ofereça a garantia se a taxa incomodar', detail: 'Verbas rescisórias ou FGTS reduzem a taxa — explique o trade-off com clareza.' },
+      { step: 'Compare propostas', detail: 'Reforce que ele tem até 24h para comparar as ofertas antes de decidir.' },
     ],
     objections: [
       { q: '"É só desconto em folha, isso me prejudica?"', a: 'Não. É justamente por ser descontado em folha que a taxa costuma ser mais baixa que outras modalidades — sem boleto pra se preocupar.' },
@@ -48,16 +49,16 @@ const PRODUTOS = [
     regrasOuro: [
       'Nunca prometa prazo de liberação.',
       'Foque na condição atual e na disponibilidade do valor.',
-      'Sempre ligue antes de mandar mensagem no WhatsApp.',
       'Só entre em detalhes de desconto em folha se o cliente perguntar.',
     ],
     checklist: [
-      'Identifiquei se é crédito novo ou refinanciamento',
+      'Identifique o contexto/simulação',
       'Apresentei o valor antes do prazo',
       'Tentei negociar antes de perder o cliente',
       'Não prometi prazo de liberação',
-      'Levei o cliente para o WhatsApp',
       'Registrei o motivo caso ele tenha recusado',
+      'fiz negociação',
+      'fiz follow ups',
     ],
   },
   {
@@ -213,54 +214,7 @@ const PRODUTOS = [
       'Apresentei os limites de valor por parcela', 'Enviei o contrato para assinatura digital',
     ],
   },
-  {
-    id: 'trabalhador',
-    nome: 'Crédito do Trabalhador',
-    icone: '📱',
-    resumo: 'e-Consignado via Carteira de Trabalho Digital',
-    hero: [
-      { label: 'Produto', value: 'Crédito do Trabalhador (e-consignado)' },
-      { label: 'Cliente', value: 'CLT, doméstico ou rural' },
-      { label: 'Diferencial', value: 'Contratação 100% pela CTPS Digital' },
-      { label: 'Objetivo', value: 'Simular e comparar propostas' },
-    ],
-    essencial: [
-      { title: 'Contratação centralizada', body: 'Tudo acontece pelo app CTPS Digital — não depende de convênio prévio entre banco e empregador.' },
-      { title: 'Margem de até 35%', body: 'O trabalhador pode comprometer até 35% da remuneração líquida com as parcelas.' },
-      { title: 'Taxa com teto', body: 'Juros limitados a até 1,99% ao mês — vale reforçar isso na comparação com outros créditos.' },
-      { title: 'Garantias reduzem a taxa', body: 'Verbas rescisórias, multa do FGTS e até 10% do saldo do FGTS podem ser usados como garantia.' },
-    ],
-    highlight: '"Você compara até 100 propostas em um só lugar, direto no app do governo — e tem até 24h pra escolher a melhor."',
-    flow: ['1. Simulação · No app CTPS Digital', '2. Propostas · Até 100 instituições', '3. Comparação · Até 24h para decidir', '4. Garantias · Verbas, FGTS, multa', '5. Contratação · Direto no app'],
-    cenarios: [
-      { title: 'Dúvida sobre o produto', body: 'Explique que é um consignado feito pelo app CTPS Digital, com desconto direto na folha e taxa com teto de 1,99% a.m.' },
-      { title: 'Interesse — quer saber a taxa', body: 'Mostre como oferecer uma garantia (verbas rescisórias, FGTS) pode reduzir ainda mais a taxa da proposta.' },
-      { title: 'Cliente com medo de comprometer o FGTS', body: 'Explique que o uso da garantia é opcional e que ele autoriza um bloqueio parcial, usado apenas se houver demissão.' },
-      { title: 'Cliente já usou o limite de margem', body: 'Verifique alternativas como o Empréstimo na Conta de Luz ou o FGTS Saque-Aniversário como cross-sell.' },
-    ],
-    negociacao: [
-      { step: 'Apresente sem garantia primeiro', detail: 'Mostre a taxa padrão antes de complicar com garantias.' },
-      { step: 'Ofereça a garantia se a taxa incomodar', detail: 'Verbas rescisórias ou FGTS reduzem a taxa — explique o trade-off com clareza.' },
-      { step: 'Compare propostas', detail: 'Reforce que ele tem até 24h para comparar as até 100 ofertas no app.' },
-    ],
-    objections: [
-      { q: '"Se eu for demitido, perco tudo?"', a: 'Não tudo — até 100% da multa do FGTS pode ser usada pra quitar o saldo devedor, mas dentro do limite da garantia oferecida.' },
-      { q: '"Por que preciso usar o app do governo?"', a: 'É assim que a modalidade funciona — centraliza as propostas de várias instituições num só lugar, o que te dá mais segurança e opções de comparação.' },
-      { q: '"A taxa de vocês é a melhor?"', a: 'Vamos comparar: no app você vê todas as propostas recebidas e escolhe a mais vantajosa dentro de 24h.' },
-      { q: '"Não confio em dar o FGTS como garantia."', a: 'Entendo — o uso do FGTS como garantia é opcional. Posso te mostrar a proposta sem essa garantia também, só que com taxa um pouco maior.' },
-    ],
-    regrasOuro: [
-      'Nunca prometa aprovação fora da simulação oficial no app.',
-      'Seja claro sobre o que acontece com a garantia em caso de demissão.',
-      'Sempre informe o teto de 35% de margem.',
-      'Reforce que ele pode comparar até 100 propostas antes de decidir.',
-    ],
-    checklist: [
-      'Expliquei que a contratação é pela CTPS Digital', 'Informei o teto de margem consignável (35%)',
-      'Expliquei as opções de garantia e seus efeitos', 'Comparei taxa com e sem garantia',
-      'Reforcei o prazo de 24h para comparar propostas',
-    ],
-  },
+
 ];
 
 function Secao({ titulo, children }) {
@@ -274,6 +228,8 @@ function Secao({ titulo, children }) {
 
 export default function PlaybookNative({ onContinuar }) {
   const [abertoId, setAbertoId] = useState(null);
+  const [fluxoAberto, setFluxoAberto] = useState(false);
+  const [fluxoNodeAberto, setFluxoNodeAberto] = useState(null);
   const [vistos, setVistos] = useState([]);
 
   const todosVistos = vistos.length >= PRODUTOS.length;
@@ -421,6 +377,70 @@ export default function PlaybookNative({ onContinuar }) {
               </Secao>
 
               <button className="block-next" style={{ marginTop: 18 }} onClick={() => setAbertoId(null)}>Entendi →</button>
+              {produtoAberto.fluxogramaInterativo && (
+                <button
+                  className="nav-btn"
+                  style={{ marginTop: 10, width: '100%' }}
+                  onClick={() => { setFluxoNodeAberto(null); setFluxoAberto(true); }}
+                >
+                  🗺️ Ver fluxograma navegável
+                </button>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {fluxoAberto && produtoAberto && (
+          <div className="block-overlay" onClick={() => setFluxoAberto(false)} style={{ alignItems: 'flex-start', paddingTop: 40 }}>
+            <motion.div
+              className="block-card"
+              style={{ maxWidth: 640, maxHeight: '85vh', overflowY: 'auto', textAlign: 'left' }}
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <h2>{produtoAberto.icone} Fluxograma — {produtoAberto.nome}</h2>
+              <p style={{ fontSize: 13, color: '#b8b0a0' }}>Clique em cada etapa pra ver o que fazer</p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 20, gap: 4 }}>
+                <div className="fluxo-node fluxo-node-start">Lead chega</div>
+                <div className="fluxo-linha" />
+                <div className="fluxo-node fluxo-node-start">Qual o cenário?</div>
+                <div className="fluxo-linha" />
+                <div className="fluxo-grid">
+                  {produtoAberto.cenarios.map((c, i) => {
+                    const aberto = fluxoNodeAberto === i;
+                    return (
+                      <div key={i} className="fluxo-branch">
+                        <div className="fluxo-conector-topo" />
+                        <button
+                          type="button"
+                          className={`fluxo-node fluxo-node-cenario ${aberto ? 'aberto' : ''}`}
+                          onClick={() => setFluxoNodeAberto(aberto ? null : i)}
+                        >
+                          <span className="fluxo-node-num">{i + 1}</span>
+                          {c.title}
+                        </button>
+                        {aberto && (
+                          <motion.div
+                            className="fluxo-detalhe"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                          >
+                            <p>{c.body}</p>
+                          </motion.div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button className="block-next" style={{ marginTop: 18 }} onClick={() => setFluxoAberto(false)}>Fechar</button>
             </motion.div>
           </div>
         )}
