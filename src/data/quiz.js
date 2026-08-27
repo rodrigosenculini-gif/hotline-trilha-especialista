@@ -72,7 +72,25 @@ export function buildGameQuestions() {
   });
 }
 
-export function ghostStageForIndex(qIndex) {
-  const stageIndex = Math.min(Math.floor(qIndex / 4), GHOST_STAGES.length - 1);
+// Fase especial só pras perguntas bônus/reforço (as que vêm de erro ou
+// revisão na trilha da montanha) — sempre o mesmo cenário/monstro, pra
+// diferenciar visualmente que é um desafio extra.
+export const BONUS_STAGE = {
+  name: 'Desafio Extra',
+  emoji: '👹',
+  color: '#e8c96a',
+  slimeEmoji: '⚡',
+  slimeColor: '#e8c96a',
+  darkness: 0.5,
+  img: '/images/monstro-boss.png',
+  bg: '/images/cenario-extra.png',
+};
+
+// Divide as fases igualmente entre as perguntas BASE (sem contar as
+// bônus/reforço, que têm fase própria) — evita uma fase absorver quase
+// todas as perguntas quando o total varia.
+export function ghostStageForIndex(qIndex, totalBase = QUESTIONS.length) {
+  const porFase = Math.max(1, Math.ceil(totalBase / GHOST_STAGES.length));
+  const stageIndex = Math.min(Math.floor(qIndex / porFase), GHOST_STAGES.length - 1);
   return GHOST_STAGES[stageIndex];
 }

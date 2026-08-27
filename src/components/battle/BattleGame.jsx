@@ -5,6 +5,8 @@ import {
   ghostStageForIndex,
   HOT_HIT_LINES,
   MAX_LIVES,
+  QUESTIONS,
+  BONUS_STAGE,
   shuffle,
 } from '../../data/quiz';
 import { BOARD_STOPS } from '../../data/board';
@@ -51,10 +53,11 @@ export default function BattleGame({ onVictory, onGameOver, sessaoId, vendedor, 
   const [hotLine, setHotLine] = useState(null);
   const [modal, setModal] = useState(null);
 
-  const stage = ghostStageForIndex(qi);
-  const prevStage = qi > 0 ? ghostStageForIndex(qi - 1) : stage;
-  const stageChanged = stage.name !== prevStage.name;
   const q = questions[qi];
+  const qPrev = qi > 0 ? questions[qi - 1] : q;
+  const stage = q?.especial ? BONUS_STAGE : ghostStageForIndex(qi, QUESTIONS.length);
+  const prevStage = qi > 0 ? (qPrev?.especial ? BONUS_STAGE : ghostStageForIndex(qi - 1, QUESTIONS.length)) : stage;
+  const stageChanged = stage.name !== prevStage.name;
 
   function pick(i) {
     if (selected !== null || modal) return;
