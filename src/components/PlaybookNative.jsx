@@ -25,8 +25,9 @@ const PRODUTOS = [
       { title: 'Juros de até 4,98% ao mês', body: 'Taxa competitiva — vale reforçar isso quando o cliente comparar com outras opções.' },
       { title: 'Comece pelo benefício', body: 'Fale primeiro do valor/condição — nunca abra a conversa falando de burocracia ou prazo.' },
     ],
+    duvidaFrequente: 'O desconto em folha é realizado mês a mês, porém o início dele é oficialmente a partir de 60 dias da contratação do empréstimo. Mas isso pode mudar de acordo com a empresa em que o cliente trabalha — grande parte das empresas começa a repassar os descontos logo no próximo holerite. Há dois momentos: entre o dia 1 e o dia 22, o desconto pode acontecer já no próximo mês; depois do dia 23 (virada de folha pelo RH), o desconto só vai acontecer a partir do mês seguinte ao próximo.',
     highlight: '"Consegui uma condição para você e vou te mostrar como aproveitar."',
-    flow: ['1. Identifique · Origem do lead', '2. Pergunte · Já tem crédito ativo?', '3. Apresente · Valor disponível', '4. Negocie · Se houver objeção', '5. Finalize · Feche e leve ao WhatsApp'],
+    flow: ['1. Identifique · Origem do lead', '2. Pergunte · Resolva dúvidas do cliente', '3. Apresente · Valor disponível', '4. Negocie · Se houver objeção', '5. Finalize · Agradeça, oferte outros produtos, peça indicação.'],
     cenarios: [
       { title: 'Dúvida sobre o produto', body: 'Explique sobre o produto: um crédito novo disponível com desconto direto em folha de pagamento. Utilizando até 35% do salário do cliente, com taxas baixas e várias opções de bancos para aprovação. A aprovação depende do motor de crédito do banco parceiro.' },
       { title: 'Sem interesse — valor bom', body: 'Pergunte por que não tem interesse. Apresente as vantagens do crédito, dê mais informações sobre o produto, tente outro valor (pergunte quanto ele deseja), tente outro banco, ou oferte outro produto.' },
@@ -60,6 +61,21 @@ const PRODUTOS = [
       'fiz negociação',
       'fiz follow ups',
     ],
+    leilao: {
+      intro: 'O Leilão do Crédito CLT é uma oportunidade de captação de lead através de ferramentas disponíveis. A Carteira de Trabalho Digital dá a possibilidade do cliente fazer simulações fictícias — e quando faz isso, seus dados são enviados para nossa plataforma e conseguimos entrar em contato com ele para fazer a primeira abordagem.',
+      obstaculos: [
+        'Nem todos vão ser aprovados, depende dos bancos.',
+        'São clientes novos — a maioria nunca entrou em contato com a Hotline, então pode chegar estressado no atendimento. Tudo precisa ser tratado com cautela.',
+        'Algumas propostas nos bancos parceiros podem travar num status antes do pagamento: só é possível pagar a nossa quando as simulações que ele fez direto pela carteira de trabalho cessarem. Normalmente dura 24 horas, dependendo de quando ele chegou até a nossa plataforma.',
+        'Dados do cliente podem estar incorretos.',
+      ],
+      saidas: [
+        'Sempre há a possibilidade do cross sell. As regras e motores de crédito do banco (ou do próprio empréstimo) podem mudar — fidelize o cliente pra ter alternativas de tentativa, até mesmo num próximo momento, como no mês seguinte.',
+        'Trate o cliente com cordialidade. Se estiver estressado, acalme-o — o que ele mais espera é resolução, principalmente vinda de você, vendedor.',
+        'Sempre informe ao cliente que ele não deve ter simulações ativas na carteira de trabalho digital — se tiver, isso pode interferir no pagamento.',
+        'Caso identifique erros nos dados, confirme com o cliente. Antes de mais nada, entenda se está falando com a pessoa correta.',
+      ],
+    },
   },
   {
     id: 'refin',
@@ -330,6 +346,12 @@ export default function PlaybookNative({ onContinuar }) {
                     </div>
                   ))}
                 </div>
+                {produtoAberto.duvidaFrequente && (
+                  <div style={{ marginTop: 10, background: 'var(--bg-elev-2)', border: '1px solid var(--line)', borderRadius: 10, padding: 10 }}>
+                    <strong style={{ fontSize: 12.5, color: 'var(--amber)' }}>Dúvida frequente</strong>
+                    <p style={{ fontSize: 12.5, marginTop: 4 }}>{produtoAberto.duvidaFrequente}</p>
+                  </div>
+                )}
               </Secao>
 
               <Secao titulo="02 · Frase-chave">
@@ -380,7 +402,21 @@ export default function PlaybookNative({ onContinuar }) {
                 </ul>
               </Secao>
 
-              <Secao titulo="08 · Checklist final">
+              {produtoAberto.leilao && (
+                <Secao titulo="08 · Leilão">
+                  <p style={{ fontSize: 13, marginBottom: 10 }}>{produtoAberto.leilao.intro}</p>
+                  <strong style={{ fontSize: 12.5, color: 'var(--amber)' }}>Possíveis obstáculos</strong>
+                  <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6, marginBottom: 12 }}>
+                    {produtoAberto.leilao.obstaculos.map((o, i) => <li key={i} style={{ fontSize: 13 }}>{o}</li>)}
+                  </ul>
+                  <strong style={{ fontSize: 12.5, color: 'var(--amber)' }}>Possíveis saídas</strong>
+                  <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
+                    {produtoAberto.leilao.saidas.map((s, i) => <li key={i} style={{ fontSize: 13 }}>{s}</li>)}
+                  </ul>
+                </Secao>
+              )}
+
+              <Secao titulo={`${produtoAberto.leilao ? '09' : '08'} · Checklist final`}>
                 <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 4 }}>
                   {produtoAberto.checklist.map((c, i) => <li key={i} style={{ fontSize: 13 }}>☐ {c}</li>)}
                 </ul>
